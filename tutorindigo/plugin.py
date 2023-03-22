@@ -43,6 +43,13 @@ hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
     ],
 )
 
+hooks.Filters.ENV_PATCHES.add_item(
+    (
+        "mfe-dockerfile-post-npm-install",
+        "RUN npm install '@edx/frontend-component-footer@git+https://github.com/1nilsh/frontend-component-footer.git'"
+    )
+)
+
 # Force the rendering of scss files, even though they are included in a "partials" directory
 hooks.Filters.ENV_PATTERNS_INCLUDE.add_item(
     r"indigo/lms/static/sass/partials/lms/theme/"
