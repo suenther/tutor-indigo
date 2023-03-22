@@ -54,40 +54,116 @@ newrelic.addPageAction('xfinished');
     </main>
 </div>
 
-<script>
-    if (window.location.pathname.split("/").pop() == "register"){
+<script type="text/javascript">
+    function ConfirmDialog(message) {
+        $('<div></div>').appendTo('body')
+            .html('<div style="font-size: 1rem;line-height: 1.4em;font-family: \"Open Sans\",\"Helvetica Neue\",Helvetica,Arial,sans-serif;">' + message + '</div>')
+            .dialog({
+                modal: true,
+                title: 'Are you sure?',
+                zIndex: 10000,
+                autoOpen: true,
+                heigth: "200px",
+                width: "400px",
+                resizable: false,
+                buttons: {
+                    Yes: function() {
+                        $('#register-consent').prop( "checked", false );
+                        dialog_count = 1;
+                        $(this).dialog("close");
+                    },
+                    No: function() {
+                        $('#register-consent').prop( "checked", true);
+                        dialog_count = 1;
+                        $(this).dialog("close");
+                    }
+                },
+                close: function(event, ui) {
+                    $(this).remove();
+                }
+            });
+    };
+
+    function sortTable(identifier) {
+        //get the parent table for convenience
+        let table = document.getElementById(identifier);
+
+        //1. get all rows
+        let rowsCollection = table.querySelectorAll("tr");
+
+        //2. convert to array
+        let rows = Array.from(rowsCollection)
+            .slice(1); //skip the header row
+
+        //3. shuffle
+        shuffleArray(rows);
+
+        //4. add back to the DOM
+        // for (const row of rows) {
+        //   row.style.setProperty("background-color","rgba(6,86,131, .15)");
+        //   table.appendChild(row);
+        // }
+        for (var i = 0; i < rows.length; i++) {
+            row = rows[i];
+            if((i % 2) == 0){
+                row.style.setProperty("background-color","rgba(6,86,131, .15)");
+            }
+            table.appendChild(row);
+        }
+
+    }
+
+    function shuffleArray(array) {
+        for (var i = array.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+    }
+    $(window).on('load', function(){
+
+        if (window.location.pathname.split("/").pop() == "dashboard"){
+            if ($('#account-activation-title').length > 0)
+            {
+                alert("To use this platform, you have to verify your email first. Please take a look in your inbox.");
+                window.location.href = '/logout';
+            }
+        }
+
+        if (window.location.pathname.split("/").pop() == "register"){
 
 //  if((window.location.hash == "" || window.location.hash == "undefined" || window.location.hash == null)){
 //  alert("Registration closed. Opens after first lecture." + window.location.hash);
 //  window.location.replace("https://e-learning.eesys.uni-bamberg.de");
 //  }
 
-        if (typeof jQuery.ui == 'undefined') {
-            var headTag = document.getElementsByTagName("head")[0];
-            var jqTag = document.createElement('script');
-            jqTag.type = 'text/javascript';
-            jqTag.src = 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js';
-            headTag.appendChild(jqTag);
-            if (!$("link[href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css']").length){
-                $('<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css" rel="stylesheet">').appendTo("head");
+            if (typeof jQuery.ui == 'undefined') {
+                var headTag = document.getElementsByTagName("head")[0];
+                var jqTag = document.createElement('script');
+                jqTag.type = 'text/javascript';
+                jqTag.src = 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js';
+                headTag.appendChild(jqTag);
+                if (!$("link[href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css']").length){
+                    $('<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css" rel="stylesheet">').appendTo("head");
+                }
             }
-        }
-        dialog_count = 0;
+            dialog_count = 0;
 
-        function completed_fade(){
-            // $('label').each(function () {
-            //     $(this).removeClass("focus-out");
-            // });
+            function completed_fade(){
+                // $('label').each(function () {
+                //     $(this).removeClass("focus-out");
+                // });
 
-            $("#register :input").prop("disabled", false);
-            //  $('#register :input').each(function () {
-            //     if($(this).is("select") || $(this).is("input:text")) $(this).css("height", Math.max($("label[for='" + $(this).attr('id') + "']").height()+5,31));
-            // });
-        }
-        setTimeout(function(){$("#register").fadeIn(800, callback=completed_fade);},300);
-        set_fields_visible = function(){
-            if($("#register-consent").length > 0){
-                var table_1 = `
+                $("#register :input").prop("disabled", false);
+                //  $('#register :input').each(function () {
+                //     if($(this).is("select") || $(this).is("input:text")) $(this).css("height", Math.max($("label[for='" + $(this).attr('id') + "']").height()+5,31));
+                // });
+            }
+            setTimeout(function(){$("#register").fadeIn(800, callback=completed_fade);},300);
+            set_fields_visible = function(){
+                if($("#register-consent").length > 0){
+                    var table_1 = `
    <div style="margin-top:0px;padding-top:30px;padding-bottom:10px;" class="label-text intro-table">Please rate your level of agreement with the following statements:
     <table cellpadding="0" cellspacing="0" border="0" style="table-layout: fixed;width: 100%;" class="table table-striped radiogrid">
   <colgroup>
@@ -136,7 +212,7 @@ newrelic.addPageAction('xfinished');
     </tbody>
 </table></div>`;
 
-                var table_2 =  `
+                    var table_2 =  `
    <div style="margin-top:0px;padding-top:0px;padding-bottom:10px;border-top: 1px solid rgba(6,86,131, .05);" class="label-text intro-table">Do you often ...
     <table cellpadding="0" cellspacing="0" border="0" style="table-layout: fixed;width: 100%;" class="table table-striped radiogrid">
   <colgroup>
@@ -192,41 +268,41 @@ newrelic.addPageAction('xfinished');
             </tr>
     </tbody>
 </table></div>`;
-                /*
-                   var table_3 = `
-                   <div style="margin-top:0px;padding-top:30px;padding-bottom:30px;" class="label-text intro-table">Please answer the following statement:
-                    <table cellpadding="0" cellspacing="0" border="0" style="table-layout: fixed;width: 100%;" class="table table-striped radiogrid">
-                  <colgroup>
-                      <col style="width:25%;"/>
-                      <col style="width:15%;"/>
-                      <col style="width:15%;"/>
-                      <col style="width:15%;"/>
-                      <col style="width:15%;"/>
-                      <col style="width:15%;"/>
-                  </colgroup>
-                    <thead>
-                        <tr>
-                                <th class="label_edx">&nbsp;</th>
-                                <th class="label_edx">Never</th>
-                                <th class="label_edx">Seldom</th>
-                                <th class="label_edx">Sometimes</th>
-                                <th class="label_edx">Often</th>
-                                <th class="label_edx">Almost always</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                    /*
+                       var table_3 = `
+                       <div style="margin-top:0px;padding-top:30px;padding-bottom:30px;" class="label-text intro-table">Please answer the following statement:
+                        <table cellpadding="0" cellspacing="0" border="0" style="table-layout: fixed;width: 100%;" class="table table-striped radiogrid">
+                      <colgroup>
+                          <col style="width:25%;"/>
+                          <col style="width:15%;"/>
+                          <col style="width:15%;"/>
+                          <col style="width:15%;"/>
+                          <col style="width:15%;"/>
+                          <col style="width:15%;"/>
+                      </colgroup>
+                        <thead>
                             <tr>
-                                <td class="question_edx">How often do you procrastinate?</td>
-                                <td class="likert_edx"><input type="radio" name="radio-register-procrastinate" value="1"></td>
-                                <td class="likert_edx"><input type="radio" name="radio-register-procrastinate" value="2"></td>
-                                <td class="likert_edx"><input type="radio" name="radio-register-procrastinate" value="3"></td>
-                                <td class="likert_edx"><input type="radio" name="radio-register-procrastinate" value="4"></td>
-                                <td class="likert_edx"><input type="radio" name="radio-register-procrastinate" value="5"></td>
+                                    <th class="label_edx">&nbsp;</th>
+                                    <th class="label_edx">Never</th>
+                                    <th class="label_edx">Seldom</th>
+                                    <th class="label_edx">Sometimes</th>
+                                    <th class="label_edx">Often</th>
+                                    <th class="label_edx">Almost always</th>
                             </tr>
-                    </tbody>
-                </table></div>`;
-                */
-                var table_4 =  `
+                        </thead>
+                        <tbody>
+                                <tr>
+                                    <td class="question_edx">How often do you procrastinate?</td>
+                                    <td class="likert_edx"><input type="radio" name="radio-register-procrastinate" value="1"></td>
+                                    <td class="likert_edx"><input type="radio" name="radio-register-procrastinate" value="2"></td>
+                                    <td class="likert_edx"><input type="radio" name="radio-register-procrastinate" value="3"></td>
+                                    <td class="likert_edx"><input type="radio" name="radio-register-procrastinate" value="4"></td>
+                                    <td class="likert_edx"><input type="radio" name="radio-register-procrastinate" value="5"></td>
+                                </tr>
+                        </tbody>
+                    </table></div>`;
+                    */
+                    var table_4 =  `
    <div style="margin-top:0px;padding-top:0px;padding-bottom:10px;border-top: 1px solid rgba(6,86,131, .05);" class="label-text intro-table">
     <table cellpadding="0" cellspacing="0" border="0" style="table-layout: fixed;width: 100%;" class="table table-striped radiogrid">
   <colgroup>
@@ -332,7 +408,7 @@ newrelic.addPageAction('xfinished');
 </table></div>`;
 
 
-                var MLSQ_Eff =  `
+                    var MLSQ_Eff =  `
 <p class="survey_text">The following questions ask about your motivation for and attitudes about this course. <br/> Please rate each statement in terms of how much it applies to you. You can grade your answers from (1) &#34;not all all true of me&#34; to (7) &#34;very true of me&#34;.</p>
    <div style="margin-top:0px;padding-top:0px;padding-bottom:10px;border-top: 1px solid rgba(6,86,131, .05);" class="label-text intro-table">
     <table id="msql_eff" cellpadding="0" cellspacing="0" border="0" style="border-collapse: separate !important;table-layout: fixed;width: 100%;" class="table table-striped radiogrid">
@@ -507,7 +583,7 @@ newrelic.addPageAction('xfinished');
     </tbody>
 </table></div>`;
 
-                var MLSQ_Meta_Cognitiv =  `
+                    var MLSQ_Meta_Cognitiv =  `
 <p class="survey_text">The following questions ask about your learning strategies and study skills for this course.
 Please rate each statement in terms of how much it applies to you. You can grade your answers from (1) &#34;not all all true of me&#34; to (7) &#34;very true of me&#34;.</p>
    <div style="padding-top:0px;padding-bottom:10px;border-top: 1px solid rgba(6,86,131, .05);" class="label-text intro-table">
@@ -894,7 +970,7 @@ Please rate each statement in terms of how much it applies to you. You can grade
 
 
 
-                var procrastination_table =  `
+                    var procrastination_table =  `
 <p class="survey_text">The following questions assess your habits and routines as a student. Please answer the following as they apply to yourself. You can grade your answers from (1) "Disagree" to (5) "Agree".</p>
   <p class="survey_text" style="margin-top:10px;display:none;">How much do you, yourself agree to the following statements?</p>
    <div style="margin-top:20px;padding-top:0px;padding-bottom:10px;border-top: 1px solid rgba(6,86,131, .05);" class="label-text intro-table">
@@ -969,7 +1045,7 @@ Please rate each statement in terms of how much it applies to you. You can grade
 </table></div>`;
 
 
-                var big5 =  `
+                    var big5 =  `
   <p class="survey_text" style="margin-top:10px;">To what extent do the following statements apply to you?</p>
    <div style="margin-top:20px;padding-top:0px;padding-bottom:10px;border-top: 1px solid rgba(6,86,131, .05);margin-bottom:0px !important;" class="label-text intro-table">
     <table id="bigfivetable" cellpadding="0" cellspacing="0" border="0" style="border-collapse: separate !important;table-layout: fixed;width: 100%;" class="table table-striped radiogrid">
@@ -1017,7 +1093,7 @@ Please rate each statement in terms of how much it applies to you. You can grade
 </table></div>`;
 
 
-                var anxiety_table =  `
+                    var anxiety_table =  `
    <div style="padding-top:0px;padding-bottom:10px;border-top: 1px solid rgba(6,86,131, .05);" class="label-text intro-table">
     <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: separate !important;table-layout: fixed;width: 100%;" class="table table-striped radiogrid">
   <colgroup>
@@ -1114,495 +1190,495 @@ Please rate each statement in terms of how much it applies to you. You can grade
     </tbody>
 </table></div>`;
 
-                //  $(".select-familiar_with_R").after(table_1);
-                // LIST   $(".text-course_how_many_students_studying").before(table_2);
+                    //  $(".select-familiar_with_R").after(table_1);
+                    // LIST   $(".text-course_how_many_students_studying").before(table_2);
 
-                $(".select-gender").insertBefore($(".select-study_programme"));
-                $(".text-your_age").insertAfter($(".select-enhanced_gender"));
+                    $(".select-gender").insertBefore($(".select-study_programme"));
+                    $(".text-your_age").insertAfter($(".select-enhanced_gender"));
 
-                /////  $(".select-list_lang").insertBefore(".select-part_time_student");
-                $(".select-bachelor_level_statistics").hide();
-                $(".select-master_level_statistics").hide();
-                $(".select-familiar_with_R").hide();
+                    /////  $(".select-list_lang").insertBefore(".select-part_time_student");
+                    $(".select-bachelor_level_statistics").hide();
+                    $(".select-master_level_statistics").hide();
+                    $(".select-familiar_with_R").hide();
 
-                ///// $(".select-importance_DAEI").before(table_1);
-                // $(".text-course_how_many_students_studying").before(table_3);
-                $("#register-more_time_on_course").after('<span>%</span>');
-                $("#register-course_how_many_students_studying").after('<span>%</span>');
-                $(".label-optional").hide();
-                //intro_text = '<p id="ask_survey">We kindly ask you to fill in the following questions with care. The questions will be recorded anonymously and serve to improve the course content and the learning platform. Responding to the questions has no influence on your grading. There are no right or wrong answers.</p>';
+                    ///// $(".select-importance_DAEI").before(table_1);
+                    // $(".text-course_how_many_students_studying").before(table_3);
+                    $("#register-more_time_on_course").after('<span>%</span>');
+                    $("#register-course_how_many_students_studying").after('<span>%</span>');
+                    $(".label-optional").hide();
+                    //intro_text = '<p id="ask_survey">We kindly ask you to fill in the following questions with care. The questions will be recorded anonymously and serve to improve the course content and the learning platform. Responding to the questions has no influence on your grading. There are no right or wrong answers.</p>';
 
-                intro_text = '<p id="ask_survey">With this course, we are conducting a study to improve systematically and data-based the quality of teaching. The aim is to increase learning success, reduce failure rates and to ensure that as many students as possible invest their time spent on learning wisely. In order to develop improvements that are as accurate as possible and tailored to the students, we kindly ask you to fill in the following questions covering individual characteristics relevant to learning. <br/>It takes about 8-10 minutes to complete the questions. The questions will be recorded anonymously and only serve as study purpose (i.e., improving the learning platform). Responding to the questions has no influence on your grading. There are no right or wrong answers. Of course, responding is voluntary and items can be marked with &quot;no answer&quot;.</p>';
-                intro_learning_text ='<p id="ask_survey2">Please rate the following items based on your behavior in this class. Your rating should be on a 7-point scale where 1=not at all true of me to 7=very true of me.</p>';
-                $('.select-motivation_DAEI').after('<div id="gqq" style="margin-top:20px;"><h3>Questions on Learning Behavior</h3></div>');
+                    intro_text = '<p id="ask_survey">With this course, we are conducting a study to improve systematically and data-based the quality of teaching. The aim is to increase learning success, reduce failure rates and to ensure that as many students as possible invest their time spent on learning wisely. In order to develop improvements that are as accurate as possible and tailored to the students, we kindly ask you to fill in the following questions covering individual characteristics relevant to learning. <br/>It takes about 8-10 minutes to complete the questions. The questions will be recorded anonymously and only serve as study purpose (i.e., improving the learning platform). Responding to the questions has no influence on your grading. There are no right or wrong answers. Of course, responding is voluntary and items can be marked with &quot;no answer&quot;.</p>';
+                    intro_learning_text ='<p id="ask_survey2">Please rate the following items based on your behavior in this class. Your rating should be on a 7-point scale where 1=not at all true of me to 7=very true of me.</p>';
+                    $('.select-motivation_DAEI').after('<div id="gqq" style="margin-top:20px;"><h3>Questions on Learning Behavior</h3></div>');
 
-                $('.select-part_time_student').parent().prepend('<div id="lbb"><h3 id="lb" style="margin-top:50px;margin-bottom:20px;">General Questions</h3></div>');
-                $('#lbb').before(intro_text);
+                    $('.select-part_time_student').parent().prepend('<div id="lbb"><h3 id="lb" style="margin-top:50px;margin-bottom:20px;">General Questions</h3></div>');
+                    $('#lbb').before(intro_text);
 
-                grade_text='<div id="gq" style="margin-top: 100px;" class="survey_text">Please rate the following two questions based on your grade goal for this semester. <br/>Choose the grade goal that best describes your expectation for this course&#39;s final exam.</div>';
+                    grade_text='<div id="gq" style="margin-top: 100px;" class="survey_text">Please rate the following two questions based on your grade goal for this semester. <br/>Choose the grade goal that best describes your expectation for this course&#39;s final exam.</div>';
 
-                $('#gqq').after(grade_text);
+                    $('#gqq').after(grade_text);
 
 
 
-                $('#gqq').after(big5);
-                sortTable("bigfivetable");
-                $('#gqq').after(procrastination_table);
-                sortTable("aps");
-                //$('#gqq').after(anxiety_table);
-                //$('#gqq').after(MLSQ_cognitive);
-                //$('#gqq').after(MLSQ_Mngmt_intern);
-                $('#gqq').after(MLSQ_Meta_Cognitiv);
-                sortTable("msql_meta");
-                $('#gqq').after(MLSQ_Eff);
-                sortTable("msql_eff");
+                    $('#gqq').after(big5);
+                    sortTable("bigfivetable");
+                    $('#gqq').after(procrastination_table);
+                    sortTable("aps");
+                    //$('#gqq').after(anxiety_table);
+                    //$('#gqq').after(MLSQ_cognitive);
+                    //$('#gqq').after(MLSQ_Mngmt_intern);
+                    $('#gqq').after(MLSQ_Meta_Cognitiv);
+                    sortTable("msql_meta");
+                    $('#gqq').after(MLSQ_Eff);
+                    sortTable("msql_eff");
 
-                //intro_learning_text = '<p id="ask_survey2">In the following, we would like to learn more about how you study. You will find a list of the various studying activities here. Please indicate for each activity how often it occurs in your case.</p>';
-                //$('#gqq').after(intro_learning_text);
-                $(".checkbox-consent").insertAfter($(".text-more_time_on_course"));
+                    //intro_learning_text = '<p id="ask_survey2">In the following, we would like to learn more about how you study. You will find a list of the various studying activities here. Please indicate for each activity how often it occurs in your case.</p>';
+                    //$('#gqq').after(intro_learning_text);
+                    $(".checkbox-consent").insertAfter($(".text-more_time_on_course"));
 
-                $('<div id="marker1"><p class="survey_text" id="inse1"></p><div>').insertAfter($("#gq"));
-                var oneOrZero = (Math.random()>=0.5)? 1 : 0;
-                if(oneOrZero == 0){
-                    $(".select-scale_gradegoal1").insertAfter($("#inse1"));
-                    $(".select-scale_gradegoal2").insertAfter($(".select-scale_gradegoal1"));
+                    $('<div id="marker1"><p class="survey_text" id="inse1"></p><div>').insertAfter($("#gq"));
+                    var oneOrZero = (Math.random()>=0.5)? 1 : 0;
+                    if(oneOrZero == 0){
+                        $(".select-scale_gradegoal1").insertAfter($("#inse1"));
+                        $(".select-scale_gradegoal2").insertAfter($(".select-scale_gradegoal1"));
+                    }else{
+                        $(".select-scale_gradegoal2").insertAfter($("#inse1"));
+                        $(".select-scale_gradegoal1").insertAfter($(".select-scale_gradegoal2"));
+                    }
+
+
+                    $("#register-name").val("Anonymous");
+                    $(".form-field").css("margin-top", "0px");
+                    $("#register :input").prop("disabled", true);
+                    $(".optional-fields").toggleClass();
+                    $(".form-field").css("padding-bottom", "27px");
+                    // $("label[for='register-email']").html('<span class="label-text">Email (@stud.uni-bamberg.de)</span>');
+                    // $("label[for='register-gender']").html('<span class="label-text"> Please indicate your gender.</span>');
+                    // $("label[for='register-study_programme']").html('<span class="label-text"> Please indicate your study program.</span>');
+                    $("#register-more_time_on_course,#register-course_how_many_students_studying,#register-your_age").prop("type", "number");
+                    $("#register-more_time_on_course,#register-course_how_many_students_studying").prop("min", 0);
+                    $("#register-more_time_on_course,#register-course_how_many_students_studying").prop("max", 100);
+                    $("#register-more_time_on_course,#register-course_how_many_students_studying").prop("maxlength", 3);
+
+                    $("#register-email").val("@stud.uni-bamberg.de");
+
+                    $('#register-more_time_on_course,#register-course_how_many_students_studying').on('keyup', function() {
+                        var _this = $(this);
+                        var my_min = parseInt(_this.attr('min')) || 0; // if min attribute is not defined, 1 is default
+                        var my_max = parseInt(_this.attr('max')) || 100; // if max attribute is not defined, 100 is default
+                        var my_val = parseInt(_this.val()) || (""); // if input char is not a number the value will be (min - 1) so first condition will be true
+                        if(my_val < my_min) _this.val("" );
+                        if(my_val > my_max)_this.val( my_max );
+                        //      if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);
+                    });
+
+
+                    $("#register-your_age").prop("min", 16);
+                    $("#register-your_age").prop("max", 99);
+                    $("#register-your_age").prop("maxlength", 2);
+
+
+                    $('#register-your_age').on('change', function() {
+                        var _this = $(this);
+                        var my_min = parseInt(_this.attr('min')) || 0; // if min attribute is not defined, 1 is default
+                        var my_max = parseInt(_this.attr('max')) || 99; // if max attribute is not defined, 100 is default
+                        var my_val = parseInt(_this.val()) || (""); // if input char is not a number the value will be (min - 1) so first condition will be true
+                        if(my_val < my_min) {
+                            _this.val("" );
+                            alert("The minimum age is 16.");
+                        }
+                        if(my_val > my_max) {
+                            _this.val( my_max );
+                        }
+                        //      if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);
+                    });
+
+
+
+
+                    //$("#register-course_how_many_students_studying").prop("type", "number");
+                    $("#register-consent").prop('checked', true);
+                    $('#register-consent').on('click',function(e) {
+                        var $checkbox = $(this);
+                        if(dialog_count == 0){
+                            e.preventDefault();
+                            e.stopPropagation();
+                            ConfirmDialog('We really rely on your support for improving the EESYS courses. Providing us with insights into your learning behavior will help us big time.<br /> Do you wish to opt out?');
+                        }
+                    });
+                    if($('#register-importance_DAEI').val() != "") $("input[name=radio-register-importance_DAE][value=" + $('#register-importance_DAEI').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-importance_DAEI]').change(function() {
+                        $('#register-importance_DAEI').val($(this).val());
+                    });
+
+                    if($('#register-motivation_DAEI').val() != "") $("input[name=radio-register-motivation_DAEI][value=" + $('#register-motivation_DAEI').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-motivation_DAEI]').change(function() {
+                        $('#register-motivation_DAEI').val($(this).val());
+                    });
+
+                    if($('#register-measure_around_you').val() != "")$("input[name=radio-register-measure_around_you][value=" + $('#register-measure_around_you').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-measure_around_you]').change(function() {
+                        $('#register-measure_around_you').val($(this).val());
+                    });
+
+                    if($('#register-measure_self_set_goals').val() != "")$("input[name=radio-register-measure_self_set_goals][value=" + $('#register-measure_self_set_goals').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-measure_self_set_goals]').change(function() {
+                        $('#register-measure_self_set_goals').val($(this).val());
+                    });
+
+                    if( $('#register-procrastinate').val() != "") $("input[name=radio-register-procrastinate][value=" + $('#register-procrastinate').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-procrastinate]').change(function() {
+                        $('#register-procrastinate').val($(this).val());
+                    });
+
+                    if( $('#register-list_zp1').val() != "") $("input[name=radio-register-zp1][value=" + $('#register-list_zp1').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-zp1]').change(function() {
+                        $('#register-list_zp1').val($(this).val());
+                    });
+
+                    if( $('#register-list_zp2').val() != "") $("input[name=radio-register-zp2][value=" + $('#register-list_zp2').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-zp2]').change(function() {
+                        $('#register-list_zp2').val($(this).val());
+                    });
+
+                    if( $('#register-list_zp3').val() != "") $("input[name=radio-register-zp3][value=" + $('#register-list_zp3').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-zp3]').change(function() {
+                        $('#register-list_zp3').val($(this).val());
+                    });
+
+                    if( $('#register-list_kon1').val() != "") $("input[name=radio-register-kon1][value=" + $('#register-list_kon1').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-kon1]').change(function() {
+                        $('#register-list_kon1').val($(this).val());
+                    });
+
+                    if( $('#register-list_kon2').val() != "") $("input[name=radio-register-kon2][value=" + $('#register-list_kon2').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-kon2]').change(function() {
+                        $('#register-list_kon2').val($(this).val());
+                    });
+
+                    if( $('#register-list_kon3').val() != "") $("input[name=radio-register-kon3][value=" + $('#register-list_kon3').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-kon3]').change(function() {
+                        $('#register-list_kon3').val($(this).val());
+                    });
+
+                    if( $('#register-list_reg1').val() != "") $("input[name=radio-register-reg1][value=" + $('#register-list_reg1').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-reg1]').change(function() {
+                        $('#register-list_reg1').val($(this).val());
+                    });
+
+                    if( $('#register-list_reg2').val() != "") $("input[name=radio-register-reg2][value=" + $('#register-list_reg2').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-reg2]').change(function() {
+                        $('#register-list_reg2').val($(this).val());
+                    });
+
+                    if( $('#register-list_reg3').val() != "") $("input[name=radio-register-reg3][value=" + $('#register-list_reg3').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-reg3]').change(function() {
+                        $('#register-list_reg3').val($(this).val());
+                    });
+
+                    if( $('#register-scale_efficacy1').val() != "") $("input[name=[radio-register-scale-efficacy1][value=" + $('#register-scale_efficacy1').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-efficacy1]').change(function() {
+                        $('#register-scale_efficacy1').val($(this).val());
+                    });
+
+                    if( $('#register-scale_efficacy2').val() != "") $("input[name=[radio-register-scale-efficacy2][value=" + $('#register-scale_efficacy2').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-efficacy2]').change(function() {
+                        $('#register-scale_efficacy2').val($(this).val());
+                    });
+
+                    if( $('#register-scale_efficacy3').val() != "") $("input[name=[radio-register-scale-efficacy3][value=" + $('#register-scale_efficacy3').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-efficacy3]').change(function() {
+                        $('#register-scale_efficacy3').val($(this).val());
+                    });
+
+                    if( $('#register-scale_efficacy4').val() != "") $("input[name=[radio-register-scale-efficacy4][value=" + $('#register-scale_efficacy4').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-efficacy4]').change(function() {
+                        $('#register-scale_efficacy4').val($(this).val());
+                    });
+
+                    if( $('#register-scale_efficacy5').val() != "") $("input[name=[radio-register-scale-efficacy5][value=" + $('#register-scale_efficacy5').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-efficacy5]').change(function() {
+                        $('#register-scale_efficacy5').val($(this).val());
+                    });
+
+
+                    if( $('#register-scale_efficacy6').val() != "") $("input[name=[radio-register-scale-efficacy6][value=" + $('#register-scale_efficacy6').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-efficacy6]').change(function() {
+                        $('#register-scale_efficacy6').val($(this).val());
+                    });
+
+                    if( $('#register-scale_efficacy7').val() != "") $("input[name=[radio-register-scale-efficacy7][value=" + $('#register-scale_efficacy7').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-efficacy7]').change(function() {
+                        $('#register-scale_efficacy7').val($(this).val());
+                    });
+
+                    if( $('#register-scale_efficacy8').val() != "") $("input[name=[radio-register-scale-efficacy8][value=" + $('#register-scale_efficacy8').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-efficacy8]').change(function() {
+                        $('#register-scale_efficacy8').val($(this).val());
+                    });
+
+                    if( $('#register-scale_meta_cog1').val() != "") $("input[name=[radio-register-scale-meta_cog1][value=" + $('#register-scale_meta_cog1').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-meta_cog1]').change(function() {
+                        $('#register-scale_meta_cog1').val($(this).val());
+                    });
+
+                    if( $('#register-scale_meta_cog2').val() != "") $("input[name=[radio-register-scale-meta_cog2][value=" + $('#register-scale_meta_cog2').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-meta_cog2]').change(function() {
+                        $('#register-scale_meta_cog2').val($(this).val());
+                    });
+
+                    if( $('#register-scale_meta_cog3').val() != "") $("input[name=[radio-register-scale-meta_cog3][value=" + $('#register-scale_meta_cog3').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-meta_cog3]').change(function() {
+                        $('#register-scale_meta_cog3').val($(this).val());
+                    });
+
+                    if( $('#register-scale_meta_cog4').val() != "") $("input[name=[radio-register-scale-meta_cog4][value=" + $('#register-scale_meta_cog4').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-meta_cog4]').change(function() {
+                        $('#register-scale_meta_cog4').val($(this).val());
+                    });
+
+                    if( $('#register-scale_meta_cog5').val() != "") $("input[name=[radio-register-scale-meta_cog5][value=" + $('#register-scale_meta_cog5').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-meta_cog5]').change(function() {
+                        $('#register-scale_meta_cog5').val($(this).val());
+                    });
+
+                    if( $('#register-scale_meta_cog6').val() != "") $("input[name=[radio-register-scale-meta_cog6][value=" + $('#register-scale_meta_cog6').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-meta_cog6]').change(function() {
+                        $('#register-scale_meta_cog6').val($(this).val());
+                    });
+
+                    if( $('#register-scale_meta_cog7').val() != "") $("input[name=[radio-register-scale-meta_cog7][value=" + $('#register-scale_meta_cog7').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-meta_cog7]').change(function() {
+                        $('#register-scale_meta_cog7').val($(this).val());
+                    });
+
+                    if( $('#register-scale_meta_cog8').val() != "") $("input[name=[radio-register-scale-meta_cog8][value=" + $('#register-scale_meta_cog8').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-meta_cog8]').change(function() {
+                        $('#register-scale_meta_cog8').val($(this).val());
+                    });
+
+                    if( $('#register-scale_meta_cog9').val() != "") $("input[name=[radio-register-scale-meta_cog9][value=" + $('#register-scale_meta_cog9').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-meta_cog9]').change(function() {
+                        $('#register-scale_meta_cog9').val($(this).val());
+                    });
+
+                    if( $('#register-scale_meta_cog10').val() != "") $("input[name=[radio-register-scale-meta_cog10][value=" + $('#register-scale_meta_cog10').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-meta_cog10]').change(function() {
+                        $('#register-scale_meta_cog10').val($(this).val());
+                    });
+
+                    if( $('#register-scale_meta_cog11').val() != "") $("input[name=[radio-register-scale-meta_cog11][value=" + $('#register-scale_meta_cog11').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-meta_cog11]').change(function() {
+                        $('#register-scale_meta_cog11').val($(this).val());
+                    });
+
+                    if( $('#register-scale_meta_cog12').val() != "") $("input[name=[radio-register-scale-meta_cog12][value=" + $('#register-scale_meta_cog12').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-meta_cog12]').change(function() {
+                        $('#register-scale_meta_cog12').val($(this).val());
+                    });
+
+                    if( $('#register-scale_mnmgt_int1').val() != "") $("input[name=[radio-register-scale-mnmgt_int1][value=" + $('#register-scale_mnmgt_int1').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-mnmgt_int1]').change(function() {
+                        $('#register-scale_mnmgt_int1').val($(this).val());
+                    });
+
+                    if( $('#register-scale_mnmgt_int2').val() != "") $("input[name=[radio-register-scale-mnmgt_int2][value=" + $('#register-scale_mnmgt_int2').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-mnmgt_int2]').change(function() {
+                        $('#register-scale_mnmgt_int2').val($(this).val());
+                    });
+
+                    if( $('#register-scale_mnmgt_int3').val() != "") $("input[name=[radio-register-scale-mnmgt_int3][value=" + $('#register-scale_mnmgt_int3').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-mnmgt_int3]').change(function() {
+                        $('#register-scale_mnmgt_int3').val($(this).val());
+                    });
+
+                    if( $('#register-scale_mnmgt_int4').val() != "") $("input[name=[radio-register-scale-mnmgt_int4][value=" + $('#register-scale_mnmgt_int4').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-mnmgt_int4]').change(function() {
+                        $('#register-scale_mnmgt_int4').val($(this).val());
+                    });
+
+                    if( $('#register-scale_mnmgt_int5').val() != "") $("input[name=[radio-register-scale-mnmgt_int5][value=" + $('#register-scale_mnmgt_int5').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-mnmgt_int5]').change(function() {
+                        $('#register-scale_mnmgt_int5').val($(this).val());
+                    });
+
+                    if( $('#register-scale_mnmgt_int6').val() != "") $("input[name=[radio-register-scale-mnmgt_int6][value=" + $('#register-scale_mnmgt_int6').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-mnmgt_int6]').change(function() {
+                        $('#register-scale_mnmgt_int6').val($(this).val());
+                    });
+
+                    if( $('#register-scale_mnmgt_int7').val() != "") $("input[name=[radio-register-scale-mnmgt_int7][value=" + $('#register-scale_mnmgt_int7').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-mnmgt_int7]').change(function() {
+                        $('#register-scale_mnmgt_int7').val($(this).val());
+                    });
+
+                    if( $('#register-scale_mnmgt_int8').val() != "") $("input[name=[radio-register-scale-mnmgt_int8][value=" + $('#register-scale_mnmgt_int8').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-mnmgt_int8]').change(function() {
+                        $('#register-scale_mnmgt_int8').val($(this).val());
+                    });
+
+                    if( $('#register-scale_mnmgt_int9').val() != "") $("input[name=[radio-register-scale-mnmgt_int9][value=" + $('#register-scale_mnmgt_int9').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-mnmgt_int9]').change(function() {
+                        $('#register-scale_mnmgt_int9').val($(this).val());
+                    });
+
+                    if( $('#register-scale_mnmgt_int10').val() != "") $("input[name=[radio-register-scale-mnmgt_int10][value=" + $('#register-scale_mnmgt_int10').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-mnmgt_int10]').change(function() {
+                        $('#register-scale_mnmgt_int10').val($(this).val());
+                    });
+
+                    if( $('#register-scale_mnmgt_int11').val() != "") $("input[name=[radio-register-scale-mnmgt_int11][value=" + $('#register-scale_mnmgt_int11').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-mnmgt_int11]').change(function() {
+                        $('#register-scale_mnmgt_int11').val($(this).val());
+                    });
+
+                    if( $('#register-scale_mnmgt_int12').val() != "") $("input[name=[radio-register-scale-mnmgt_int12][value=" + $('#register-scale_mnmgt_int12').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-mnmgt_int12]').change(function() {
+                        $('#register-scale_mnmgt_int12').val($(this).val());
+                    });
+
+                    if( $('#register-scale_cog1').val() != "") $("input[name=[radio-register-scale-cog1][value=" + $('#register-scale_cog1').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-cog1]').change(function() {
+                        $('#register-scale_cog1').val($(this).val());
+                    });
+
+                    if( $('#register-scale_cog2').val() != "") $("input[name=[radio-register-scale-cog2][value=" + $('#register-scale_cog2').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-cog2]').change(function() {
+                        $('#register-scale_cog2').val($(this).val());
+                    });
+
+                    if( $('#register-scale_cog3').val() != "") $("input[name=[radio-register-scale-cog3][value=" + $('#register-scale_cog3').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-cog3]').change(function() {
+                        $('#register-scale_cog3').val($(this).val());
+                    });
+
+                    if( $('#register-scale_cog4').val() != "") $("input[name=[radio-register-scale-cog4][value=" + $('#register-scale_cog4').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-cog4]').change(function() {
+                        $('#register-scale_cog4').val($(this).val());
+                    });
+
+                    if( $('#register-scale_cog5').val() != "") $("input[name=[radio-register-scale-cog5][value=" + $('#register-scale_cog5').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-cog5]').change(function() {
+                        $('#register-scale_cog5').val($(this).val());
+                    });
+
+                    if( $('#register-scale_cog6').val() != "") $("input[name=[radio-register-scale-cog6][value=" + $('#register-scale_cog6').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-cog6]').change(function() {
+                        $('#register-scale_cog6').val($(this).val());
+                    });
+
+                    if( $('#register-scale_cog7').val() != "") $("input[name=[radio-register-scale-cog7][value=" + $('#register-scale_cog7').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-cog7]').change(function() {
+                        $('#register-scale_cog7').val($(this).val());
+                    });
+
+                    if( $('#register-scale_cog8').val() != "") $("input[name=[radio-register-scale-cog8][value=" + $('#register-scale_cog8').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-cog8]').change(function() {
+                        $('#register-scale_cog8').val($(this).val());
+                    });
+
+
+                    if( $('#register-scale_proc1').val() != "") $("input[name=[radio-register-scale-proc1][value=" + $('#register-scale_proc1').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-proc1]').change(function() {
+                        $('#register-scale_proc1').val($(this).val());
+                    });
+
+                    if( $('#register-scale_proc2').val() != "") $("input[name=[radio-register-scale-proc2][value=" + $('#register-scale_proc2').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-proc2]').change(function() {
+                        $('#register-scale_proc2').val($(this).val());
+                    });
+
+                    if( $('#register-scale_proc3').val() != "") $("input[name=[radio-register-scale-proc3][value=" + $('#register-scale_proc3').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-proc3]').change(function() {
+                        $('#register-scale_proc3').val($(this).val());
+                    });
+
+                    if( $('#register-scale_proc4').val() != "") $("input[name=[radio-register-scale-proc4][value=" + $('#register-scale_proc4').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-proc4]').change(function() {
+                        $('#register-scale_proc4').val($(this).val());
+                    });
+
+                    if( $('#register-scale_proc5').val() != "") $("input[name=[radio-register-scale-proc5][value=" + $('#register-scale_proc5').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-proc5]').change(function() {
+                        $('#register-scale_proc5').val($(this).val());
+                    });
+
+
+                    if( $('#register-scale_big5_1').val() != "") $("input[name=[radio-register-scale-big1][value=" + $('#register-scale_big5_1').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-big1]').change(function() {
+                        $('#register-scale_big5_1').val($(this).val());
+                    });
+
+                    if( $('#register-scale_big5_2').val() != "") $("input[name=[radio-register-scale-big2][value=" + $('#register-scale_big5_2').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-big2]').change(function() {
+                        $('#register-scale_big5_2').val($(this).val());
+                    });
+
+
+                    if( $('#register-scale_anxiety1').val() != "") $("input[name=[radio-register-scale-anxiety1][value=" + $('#register-scale_anxiety1').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-anxiety1]').change(function() {
+                        $('#register-scale_anxiety1').val($(this).val());
+                    });
+
+                    if( $('#register-scale_anxiety2').val() != "") $("input[name=[radio-register-scale-anxiety2][value=" + $('#register-scale_anxiety2').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-anxiety2]').change(function() {
+                        $('#register-scale_anxiety2').val($(this).val());
+                    });
+
+                    if( $('#register-scale_anxiety3').val() != "") $("input[name=[radio-register-scale-anxiety3][value=" + $('#register-scale_anxiety3').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-anxiety3]').change(function() {
+                        $('#register-scale_anxiety3').val($(this).val());
+                    });
+
+                    if( $('#register-scale_anxiety4').val() != "") $("input[name=[radio-register-scale-anxiety4][value=" + $('#register-scale_anxiety4').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-anxiety4]').change(function() {
+                        $('#register-scale_anxiety4').val($(this).val());
+                    });
+
+                    if( $('#register-scale_anxiety5').val() != "") $("input[name=[radio-register-scale-anxiety5][value=" + $('#register-scale_anxiety5').val() + "]").attr('checked', 'checked');
+                    $('input:radio[name=radio-register-scale-anxiety5]').change(function() {
+                        $('#register-scale_anxiety5').val($(this).val());
+                    });
+
+                    $('.login-register').addClass('resize-form-half');
+                    $('.form-type').addClass('resize-form-half');
+                    $('#pp_consent').addClass('resize-form-half');
+                    $('.toggle-form').addClass('resize-form-full');
+
+
+                    MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+
+                    var observer = new MutationObserver(function(mutations, observer) {
+                        // fired when a mutation occurs
+                        var listItems = $(".message-copy li");
+                        for (let li of listItems) {
+                            if($(li).text().includes("&#x27;")){
+                                var new_text = $(li).text().replace("&#x27;", "'");
+                                $(li).text(new_text);
+                            }
+                            if($(li).text().includes("Unauthorized email address.")){
+                                $(li).text("Unauthorized email address: Please use your @stud.uni-bamberg.de mail.");
+                            }
+                        }
+                    });
+
+
+                    // define what element should be observed by the observer
+                    // and what types of mutations trigger the callback
+                    observer.observe(document, {
+                        subtree: true,
+                        attributes: true
+                        //...
+                    });
+
+
+
                 }else{
-                    $(".select-scale_gradegoal2").insertAfter($("#inse1"));
-                    $(".select-scale_gradegoal1").insertAfter($(".select-scale_gradegoal2"));
+                    setTimeout(set_fields_visible, 5);
                 }
-
-
-                $("#register-name").val("Anonymous");
-                $(".form-field").css("margin-top", "0px");
-                $("#register :input").prop("disabled", true);
-                $(".optional-fields").toggleClass();
-                $(".form-field").css("padding-bottom", "27px");
-                // $("label[for='register-email']").html('<span class="label-text">Email (@stud.uni-bamberg.de)</span>');
-                // $("label[for='register-gender']").html('<span class="label-text"> Please indicate your gender.</span>');
-                // $("label[for='register-study_programme']").html('<span class="label-text"> Please indicate your study program.</span>');
-                $("#register-more_time_on_course,#register-course_how_many_students_studying,#register-your_age").prop("type", "number");
-                $("#register-more_time_on_course,#register-course_how_many_students_studying").prop("min", 0);
-                $("#register-more_time_on_course,#register-course_how_many_students_studying").prop("max", 100);
-                $("#register-more_time_on_course,#register-course_how_many_students_studying").prop("maxlength", 3);
-
-                $("#register-email").val("@stud.uni-bamberg.de");
-
-                $('#register-more_time_on_course,#register-course_how_many_students_studying').on('keyup', function() {
-                    var _this = $(this);
-                    var my_min = parseInt(_this.attr('min')) || 0; // if min attribute is not defined, 1 is default
-                    var my_max = parseInt(_this.attr('max')) || 100; // if max attribute is not defined, 100 is default
-                    var my_val = parseInt(_this.val()) || (""); // if input char is not a number the value will be (min - 1) so first condition will be true
-                    if(my_val < my_min) _this.val("" );
-                    if(my_val > my_max)_this.val( my_max );
-                    //      if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);
-                });
-
-
-                $("#register-your_age").prop("min", 16);
-                $("#register-your_age").prop("max", 99);
-                $("#register-your_age").prop("maxlength", 2);
-
-
-                $('#register-your_age').on('change', function() {
-                    var _this = $(this);
-                    var my_min = parseInt(_this.attr('min')) || 0; // if min attribute is not defined, 1 is default
-                    var my_max = parseInt(_this.attr('max')) || 99; // if max attribute is not defined, 100 is default
-                    var my_val = parseInt(_this.val()) || (""); // if input char is not a number the value will be (min - 1) so first condition will be true
-                    if(my_val < my_min) {
-                        _this.val("" );
-                        alert("The minimum age is 16.");
-                    }
-                    if(my_val > my_max) {
-                        _this.val( my_max );
-                    }
-                    //      if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);
-                });
-
-
-
-
-                //$("#register-course_how_many_students_studying").prop("type", "number");
-                $("#register-consent").prop('checked', true);
-                $('#register-consent').on('click',function(e) {
-                    var $checkbox = $(this);
-                    if(dialog_count == 0){
-                        e.preventDefault();
-                        e.stopPropagation();
-                        ConfirmDialog('We really rely on your support for improving the EESYS courses. Providing us with insights into your learning behavior will help us big time.<br /> Do you wish to opt out?');
-                    }
-                });
-                if($('#register-importance_DAEI').val() != "") $("input[name=radio-register-importance_DAE][value=" + $('#register-importance_DAEI').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-importance_DAEI]').change(function() {
-                    $('#register-importance_DAEI').val($(this).val());
-                });
-
-                if($('#register-motivation_DAEI').val() != "") $("input[name=radio-register-motivation_DAEI][value=" + $('#register-motivation_DAEI').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-motivation_DAEI]').change(function() {
-                    $('#register-motivation_DAEI').val($(this).val());
-                });
-
-                if($('#register-measure_around_you').val() != "")$("input[name=radio-register-measure_around_you][value=" + $('#register-measure_around_you').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-measure_around_you]').change(function() {
-                    $('#register-measure_around_you').val($(this).val());
-                });
-
-                if($('#register-measure_self_set_goals').val() != "")$("input[name=radio-register-measure_self_set_goals][value=" + $('#register-measure_self_set_goals').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-measure_self_set_goals]').change(function() {
-                    $('#register-measure_self_set_goals').val($(this).val());
-                });
-
-                if( $('#register-procrastinate').val() != "") $("input[name=radio-register-procrastinate][value=" + $('#register-procrastinate').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-procrastinate]').change(function() {
-                    $('#register-procrastinate').val($(this).val());
-                });
-
-                if( $('#register-list_zp1').val() != "") $("input[name=radio-register-zp1][value=" + $('#register-list_zp1').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-zp1]').change(function() {
-                    $('#register-list_zp1').val($(this).val());
-                });
-
-                if( $('#register-list_zp2').val() != "") $("input[name=radio-register-zp2][value=" + $('#register-list_zp2').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-zp2]').change(function() {
-                    $('#register-list_zp2').val($(this).val());
-                });
-
-                if( $('#register-list_zp3').val() != "") $("input[name=radio-register-zp3][value=" + $('#register-list_zp3').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-zp3]').change(function() {
-                    $('#register-list_zp3').val($(this).val());
-                });
-
-                if( $('#register-list_kon1').val() != "") $("input[name=radio-register-kon1][value=" + $('#register-list_kon1').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-kon1]').change(function() {
-                    $('#register-list_kon1').val($(this).val());
-                });
-
-                if( $('#register-list_kon2').val() != "") $("input[name=radio-register-kon2][value=" + $('#register-list_kon2').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-kon2]').change(function() {
-                    $('#register-list_kon2').val($(this).val());
-                });
-
-                if( $('#register-list_kon3').val() != "") $("input[name=radio-register-kon3][value=" + $('#register-list_kon3').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-kon3]').change(function() {
-                    $('#register-list_kon3').val($(this).val());
-                });
-
-                if( $('#register-list_reg1').val() != "") $("input[name=radio-register-reg1][value=" + $('#register-list_reg1').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-reg1]').change(function() {
-                    $('#register-list_reg1').val($(this).val());
-                });
-
-                if( $('#register-list_reg2').val() != "") $("input[name=radio-register-reg2][value=" + $('#register-list_reg2').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-reg2]').change(function() {
-                    $('#register-list_reg2').val($(this).val());
-                });
-
-                if( $('#register-list_reg3').val() != "") $("input[name=radio-register-reg3][value=" + $('#register-list_reg3').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-reg3]').change(function() {
-                    $('#register-list_reg3').val($(this).val());
-                });
-
-                if( $('#register-scale_efficacy1').val() != "") $("input[name=[radio-register-scale-efficacy1][value=" + $('#register-scale_efficacy1').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-efficacy1]').change(function() {
-                    $('#register-scale_efficacy1').val($(this).val());
-                });
-
-                if( $('#register-scale_efficacy2').val() != "") $("input[name=[radio-register-scale-efficacy2][value=" + $('#register-scale_efficacy2').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-efficacy2]').change(function() {
-                    $('#register-scale_efficacy2').val($(this).val());
-                });
-
-                if( $('#register-scale_efficacy3').val() != "") $("input[name=[radio-register-scale-efficacy3][value=" + $('#register-scale_efficacy3').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-efficacy3]').change(function() {
-                    $('#register-scale_efficacy3').val($(this).val());
-                });
-
-                if( $('#register-scale_efficacy4').val() != "") $("input[name=[radio-register-scale-efficacy4][value=" + $('#register-scale_efficacy4').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-efficacy4]').change(function() {
-                    $('#register-scale_efficacy4').val($(this).val());
-                });
-
-                if( $('#register-scale_efficacy5').val() != "") $("input[name=[radio-register-scale-efficacy5][value=" + $('#register-scale_efficacy5').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-efficacy5]').change(function() {
-                    $('#register-scale_efficacy5').val($(this).val());
-                });
-
-
-                if( $('#register-scale_efficacy6').val() != "") $("input[name=[radio-register-scale-efficacy6][value=" + $('#register-scale_efficacy6').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-efficacy6]').change(function() {
-                    $('#register-scale_efficacy6').val($(this).val());
-                });
-
-                if( $('#register-scale_efficacy7').val() != "") $("input[name=[radio-register-scale-efficacy7][value=" + $('#register-scale_efficacy7').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-efficacy7]').change(function() {
-                    $('#register-scale_efficacy7').val($(this).val());
-                });
-
-                if( $('#register-scale_efficacy8').val() != "") $("input[name=[radio-register-scale-efficacy8][value=" + $('#register-scale_efficacy8').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-efficacy8]').change(function() {
-                    $('#register-scale_efficacy8').val($(this).val());
-                });
-
-                if( $('#register-scale_meta_cog1').val() != "") $("input[name=[radio-register-scale-meta_cog1][value=" + $('#register-scale_meta_cog1').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-meta_cog1]').change(function() {
-                    $('#register-scale_meta_cog1').val($(this).val());
-                });
-
-                if( $('#register-scale_meta_cog2').val() != "") $("input[name=[radio-register-scale-meta_cog2][value=" + $('#register-scale_meta_cog2').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-meta_cog2]').change(function() {
-                    $('#register-scale_meta_cog2').val($(this).val());
-                });
-
-                if( $('#register-scale_meta_cog3').val() != "") $("input[name=[radio-register-scale-meta_cog3][value=" + $('#register-scale_meta_cog3').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-meta_cog3]').change(function() {
-                    $('#register-scale_meta_cog3').val($(this).val());
-                });
-
-                if( $('#register-scale_meta_cog4').val() != "") $("input[name=[radio-register-scale-meta_cog4][value=" + $('#register-scale_meta_cog4').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-meta_cog4]').change(function() {
-                    $('#register-scale_meta_cog4').val($(this).val());
-                });
-
-                if( $('#register-scale_meta_cog5').val() != "") $("input[name=[radio-register-scale-meta_cog5][value=" + $('#register-scale_meta_cog5').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-meta_cog5]').change(function() {
-                    $('#register-scale_meta_cog5').val($(this).val());
-                });
-
-                if( $('#register-scale_meta_cog6').val() != "") $("input[name=[radio-register-scale-meta_cog6][value=" + $('#register-scale_meta_cog6').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-meta_cog6]').change(function() {
-                    $('#register-scale_meta_cog6').val($(this).val());
-                });
-
-                if( $('#register-scale_meta_cog7').val() != "") $("input[name=[radio-register-scale-meta_cog7][value=" + $('#register-scale_meta_cog7').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-meta_cog7]').change(function() {
-                    $('#register-scale_meta_cog7').val($(this).val());
-                });
-
-                if( $('#register-scale_meta_cog8').val() != "") $("input[name=[radio-register-scale-meta_cog8][value=" + $('#register-scale_meta_cog8').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-meta_cog8]').change(function() {
-                    $('#register-scale_meta_cog8').val($(this).val());
-                });
-
-                if( $('#register-scale_meta_cog9').val() != "") $("input[name=[radio-register-scale-meta_cog9][value=" + $('#register-scale_meta_cog9').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-meta_cog9]').change(function() {
-                    $('#register-scale_meta_cog9').val($(this).val());
-                });
-
-                if( $('#register-scale_meta_cog10').val() != "") $("input[name=[radio-register-scale-meta_cog10][value=" + $('#register-scale_meta_cog10').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-meta_cog10]').change(function() {
-                    $('#register-scale_meta_cog10').val($(this).val());
-                });
-
-                if( $('#register-scale_meta_cog11').val() != "") $("input[name=[radio-register-scale-meta_cog11][value=" + $('#register-scale_meta_cog11').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-meta_cog11]').change(function() {
-                    $('#register-scale_meta_cog11').val($(this).val());
-                });
-
-                if( $('#register-scale_meta_cog12').val() != "") $("input[name=[radio-register-scale-meta_cog12][value=" + $('#register-scale_meta_cog12').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-meta_cog12]').change(function() {
-                    $('#register-scale_meta_cog12').val($(this).val());
-                });
-
-                if( $('#register-scale_mnmgt_int1').val() != "") $("input[name=[radio-register-scale-mnmgt_int1][value=" + $('#register-scale_mnmgt_int1').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-mnmgt_int1]').change(function() {
-                    $('#register-scale_mnmgt_int1').val($(this).val());
-                });
-
-                if( $('#register-scale_mnmgt_int2').val() != "") $("input[name=[radio-register-scale-mnmgt_int2][value=" + $('#register-scale_mnmgt_int2').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-mnmgt_int2]').change(function() {
-                    $('#register-scale_mnmgt_int2').val($(this).val());
-                });
-
-                if( $('#register-scale_mnmgt_int3').val() != "") $("input[name=[radio-register-scale-mnmgt_int3][value=" + $('#register-scale_mnmgt_int3').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-mnmgt_int3]').change(function() {
-                    $('#register-scale_mnmgt_int3').val($(this).val());
-                });
-
-                if( $('#register-scale_mnmgt_int4').val() != "") $("input[name=[radio-register-scale-mnmgt_int4][value=" + $('#register-scale_mnmgt_int4').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-mnmgt_int4]').change(function() {
-                    $('#register-scale_mnmgt_int4').val($(this).val());
-                });
-
-                if( $('#register-scale_mnmgt_int5').val() != "") $("input[name=[radio-register-scale-mnmgt_int5][value=" + $('#register-scale_mnmgt_int5').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-mnmgt_int5]').change(function() {
-                    $('#register-scale_mnmgt_int5').val($(this).val());
-                });
-
-                if( $('#register-scale_mnmgt_int6').val() != "") $("input[name=[radio-register-scale-mnmgt_int6][value=" + $('#register-scale_mnmgt_int6').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-mnmgt_int6]').change(function() {
-                    $('#register-scale_mnmgt_int6').val($(this).val());
-                });
-
-                if( $('#register-scale_mnmgt_int7').val() != "") $("input[name=[radio-register-scale-mnmgt_int7][value=" + $('#register-scale_mnmgt_int7').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-mnmgt_int7]').change(function() {
-                    $('#register-scale_mnmgt_int7').val($(this).val());
-                });
-
-                if( $('#register-scale_mnmgt_int8').val() != "") $("input[name=[radio-register-scale-mnmgt_int8][value=" + $('#register-scale_mnmgt_int8').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-mnmgt_int8]').change(function() {
-                    $('#register-scale_mnmgt_int8').val($(this).val());
-                });
-
-                if( $('#register-scale_mnmgt_int9').val() != "") $("input[name=[radio-register-scale-mnmgt_int9][value=" + $('#register-scale_mnmgt_int9').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-mnmgt_int9]').change(function() {
-                    $('#register-scale_mnmgt_int9').val($(this).val());
-                });
-
-                if( $('#register-scale_mnmgt_int10').val() != "") $("input[name=[radio-register-scale-mnmgt_int10][value=" + $('#register-scale_mnmgt_int10').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-mnmgt_int10]').change(function() {
-                    $('#register-scale_mnmgt_int10').val($(this).val());
-                });
-
-                if( $('#register-scale_mnmgt_int11').val() != "") $("input[name=[radio-register-scale-mnmgt_int11][value=" + $('#register-scale_mnmgt_int11').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-mnmgt_int11]').change(function() {
-                    $('#register-scale_mnmgt_int11').val($(this).val());
-                });
-
-                if( $('#register-scale_mnmgt_int12').val() != "") $("input[name=[radio-register-scale-mnmgt_int12][value=" + $('#register-scale_mnmgt_int12').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-mnmgt_int12]').change(function() {
-                    $('#register-scale_mnmgt_int12').val($(this).val());
-                });
-
-                if( $('#register-scale_cog1').val() != "") $("input[name=[radio-register-scale-cog1][value=" + $('#register-scale_cog1').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-cog1]').change(function() {
-                    $('#register-scale_cog1').val($(this).val());
-                });
-
-                if( $('#register-scale_cog2').val() != "") $("input[name=[radio-register-scale-cog2][value=" + $('#register-scale_cog2').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-cog2]').change(function() {
-                    $('#register-scale_cog2').val($(this).val());
-                });
-
-                if( $('#register-scale_cog3').val() != "") $("input[name=[radio-register-scale-cog3][value=" + $('#register-scale_cog3').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-cog3]').change(function() {
-                    $('#register-scale_cog3').val($(this).val());
-                });
-
-                if( $('#register-scale_cog4').val() != "") $("input[name=[radio-register-scale-cog4][value=" + $('#register-scale_cog4').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-cog4]').change(function() {
-                    $('#register-scale_cog4').val($(this).val());
-                });
-
-                if( $('#register-scale_cog5').val() != "") $("input[name=[radio-register-scale-cog5][value=" + $('#register-scale_cog5').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-cog5]').change(function() {
-                    $('#register-scale_cog5').val($(this).val());
-                });
-
-                if( $('#register-scale_cog6').val() != "") $("input[name=[radio-register-scale-cog6][value=" + $('#register-scale_cog6').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-cog6]').change(function() {
-                    $('#register-scale_cog6').val($(this).val());
-                });
-
-                if( $('#register-scale_cog7').val() != "") $("input[name=[radio-register-scale-cog7][value=" + $('#register-scale_cog7').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-cog7]').change(function() {
-                    $('#register-scale_cog7').val($(this).val());
-                });
-
-                if( $('#register-scale_cog8').val() != "") $("input[name=[radio-register-scale-cog8][value=" + $('#register-scale_cog8').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-cog8]').change(function() {
-                    $('#register-scale_cog8').val($(this).val());
-                });
-
-
-                if( $('#register-scale_proc1').val() != "") $("input[name=[radio-register-scale-proc1][value=" + $('#register-scale_proc1').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-proc1]').change(function() {
-                    $('#register-scale_proc1').val($(this).val());
-                });
-
-                if( $('#register-scale_proc2').val() != "") $("input[name=[radio-register-scale-proc2][value=" + $('#register-scale_proc2').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-proc2]').change(function() {
-                    $('#register-scale_proc2').val($(this).val());
-                });
-
-                if( $('#register-scale_proc3').val() != "") $("input[name=[radio-register-scale-proc3][value=" + $('#register-scale_proc3').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-proc3]').change(function() {
-                    $('#register-scale_proc3').val($(this).val());
-                });
-
-                if( $('#register-scale_proc4').val() != "") $("input[name=[radio-register-scale-proc4][value=" + $('#register-scale_proc4').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-proc4]').change(function() {
-                    $('#register-scale_proc4').val($(this).val());
-                });
-
-                if( $('#register-scale_proc5').val() != "") $("input[name=[radio-register-scale-proc5][value=" + $('#register-scale_proc5').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-proc5]').change(function() {
-                    $('#register-scale_proc5').val($(this).val());
-                });
-
-
-                if( $('#register-scale_big5_1').val() != "") $("input[name=[radio-register-scale-big1][value=" + $('#register-scale_big5_1').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-big1]').change(function() {
-                    $('#register-scale_big5_1').val($(this).val());
-                });
-
-                if( $('#register-scale_big5_2').val() != "") $("input[name=[radio-register-scale-big2][value=" + $('#register-scale_big5_2').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-big2]').change(function() {
-                    $('#register-scale_big5_2').val($(this).val());
-                });
-
-
-                if( $('#register-scale_anxiety1').val() != "") $("input[name=[radio-register-scale-anxiety1][value=" + $('#register-scale_anxiety1').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-anxiety1]').change(function() {
-                    $('#register-scale_anxiety1').val($(this).val());
-                });
-
-                if( $('#register-scale_anxiety2').val() != "") $("input[name=[radio-register-scale-anxiety2][value=" + $('#register-scale_anxiety2').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-anxiety2]').change(function() {
-                    $('#register-scale_anxiety2').val($(this).val());
-                });
-
-                if( $('#register-scale_anxiety3').val() != "") $("input[name=[radio-register-scale-anxiety3][value=" + $('#register-scale_anxiety3').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-anxiety3]').change(function() {
-                    $('#register-scale_anxiety3').val($(this).val());
-                });
-
-                if( $('#register-scale_anxiety4').val() != "") $("input[name=[radio-register-scale-anxiety4][value=" + $('#register-scale_anxiety4').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-anxiety4]').change(function() {
-                    $('#register-scale_anxiety4').val($(this).val());
-                });
-
-                if( $('#register-scale_anxiety5').val() != "") $("input[name=[radio-register-scale-anxiety5][value=" + $('#register-scale_anxiety5').val() + "]").attr('checked', 'checked');
-                $('input:radio[name=radio-register-scale-anxiety5]').change(function() {
-                    $('#register-scale_anxiety5').val($(this).val());
-                });
-
-                $('.login-register').addClass('resize-form-half');
-                $('.form-type').addClass('resize-form-half');
-                $('#pp_consent').addClass('resize-form-half');
-                $('.toggle-form').addClass('resize-form-full');
-
-
-                MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-
-                var observer = new MutationObserver(function(mutations, observer) {
-                    // fired when a mutation occurs
-                    var listItems = $(".message-copy li");
-                    for (let li of listItems) {
-                        if($(li).text().includes("&#x27;")){
-                            var new_text = $(li).text().replace("&#x27;", "'");
-                            $(li).text(new_text);
-                        }
-                        if($(li).text().includes("Unauthorized email address.")){
-                            $(li).text("Unauthorized email address: Please use your @stud.uni-bamberg.de mail.");
-                        }
-                    }
-                });
-
-
-                // define what element should be observed by the observer
-                // and what types of mutations trigger the callback
-                observer.observe(document, {
-                    subtree: true,
-                    attributes: true
-                    //...
-                });
-
-
-
-            }else{
-                setTimeout(set_fields_visible, 5);
             }
+            setTimeout(set_fields_visible, 0);
         }
-        setTimeout(set_fields_visible, 0);
-    }
     });
 </script>
