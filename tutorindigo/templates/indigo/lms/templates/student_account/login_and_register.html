@@ -54,28 +54,26 @@ newrelic.addPageAction('xfinished');
     </main>
 </div>
 
-<%block name="eesys_scripts">
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
 <script>
-    <%static:include path="student_account/g_loader.underscore.js" />
+    <%include file="student_account/g_loader.underscore.js" />
 </script>
 
 <script>
-    <%static:include path="student_account/timeme.underscore.js" />
+    <%include file="student_account/timeme.underscore.js" />
 </script>
 
 <script>
-    <%static:include path="student_account/register.underscore.js" />
+    <%include file="student_account/register.underscore.js" />
 </script>
 
 <script>
-
+    console.log("test")
 </script>
 
 <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css" rel="stylesheet">
 
 <style>
-    <%static:include path="student_account/register.underscore.css" />
+    <%include file="student_account/register.underscore.css" />
 </style>
-</%block>
