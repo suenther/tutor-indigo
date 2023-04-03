@@ -24,6 +24,72 @@ newrelic.finished();
 newrelic.addPageAction('xfinished');
 }
 </%static:require_module>
+
+<%static:require_module module_name="js/src/jquery_extend_patch" class_name="CustomRegPage">
+var scales = [
+'anxiety',
+'big5',
+'cog',
+'efficacy',
+'meta_cog',
+'mnmgt_int',
+'proc',
+];
+
+scales.forEach(s => {
+
+// create a table element to hold all the radio sets
+var table = $('<table></table>');
+
+// iterate over each select element with a class of "select-scale_"
+$('div[class*="select-scale_' + s + '"] select').each(function () {
+
+var selectField = $(this);
+
+// hide the select element
+$(this).parent().hide();
+
+// create a row element for the label and radio buttons
+var row = $('<tr></tr>');
+
+// get the error message
+var errorMessage = $(this).data('errormsg-required');
+errorMessage = errorMessage.replace('Please answer the question: ', '');
+
+// create a cell element for the error message
+var errorCell = $('<td class="error-message">' + errorMessage + '</td>');
+row.append(errorCell);
+
+// create a cell element for each radio button
+$(this).find('option').each(function () {
+var optionValue = $(this).val();
+if (optionValue !== '') {
+var radioButtonCell = $('<td></td>');
+var radioButton = $('<input type="radio" name="' + $(this).parent().attr('name') + '" value="' + optionValue + '">');
+radioButtonCell.append(radioButton);
+row.append(radioButtonCell);
+}
+});
+
+// append the row to the table
+table.append(row);
+
+// listen for changes to the radio buttons
+row.find('input[type="radio"]').change(function () {
+// get the value of the selected radio button
+var selectedValue = $(this).val();
+
+// set the value of the corresponding select element
+selectField.val(selectedValue);
+});
+});
+
+// insert the table after the label of the first select element
+$('.required-fields').append('<h2>Fragenblock</h2>').append(table).append('<br><br>');
+
+});
+</%static:require_module>
+
 % if configuration_helpers.get_value('DISPLAY_TOS_IN_MODAL_ON_REGISTRATION_PAGE', False):
 <script type="text/javascript" src="${static.url('js/student_account/tos_modal.js')}"></script>
 % endif
@@ -55,72 +121,7 @@ newrelic.addPageAction('xfinished');
 </div>
 
 <script>
-    document.addEventListener("load", function () {
 
-        var scales = [
-            'anxiety',
-            'big5',
-            'cog',
-            'efficacy',
-            'meta_cog',
-            'mnmgt_int',
-            'proc',
-        ];
-
-        scales.forEach(s => {
-
-            // create a table element to hold all the radio sets
-            var table = $('<table></table>');
-
-            // iterate over each select element with a class of "select-scale_"
-            $('div[class*="select-scale_' + s + '"] select').each(function () {
-
-                var selectField = $(this);
-
-                // hide the select element
-                $(this).parent().hide();
-
-                // create a row element for the label and radio buttons
-                var row = $('<tr></tr>');
-
-                // get the error message
-                var errorMessage = $(this).data('errormsg-required');
-                errorMessage = errorMessage.replace('Please answer the question: ', '');
-
-                // create a cell element for the error message
-                var errorCell = $('<td class="error-message">' + errorMessage + '</td>');
-                row.append(errorCell);
-
-                // create a cell element for each radio button
-                $(this).find('option').each(function () {
-                    var optionValue = $(this).val();
-                    if (optionValue !== '') {
-                        var radioButtonCell = $('<td></td>');
-                        var radioButton = $('<input type="radio" name="' + $(this).parent().attr('name') + '" value="' + optionValue + '">');
-                        radioButtonCell.append(radioButton);
-                        row.append(radioButtonCell);
-                    }
-                });
-
-                // append the row to the table
-                table.append(row);
-
-                // listen for changes to the radio buttons
-                row.find('input[type="radio"]').change(function () {
-                    // get the value of the selected radio button
-                    var selectedValue = $(this).val();
-
-                    // set the value of the corresponding select element
-                    selectField.val(selectedValue);
-                });
-            });
-
-            // insert the table after the label of the first select element
-            $('.required-fields').append('<h2>Fragenblock</h2>').append(table).append('<br><br>');
-
-        });
-
-    });
 </script>
 
 <style>
