@@ -70,7 +70,7 @@ newrelic.addPageAction('xfinished');
 
 <script>
     console.log('test1')
-    $( document ).ready(function() {
+    jQuery( document ).ready(function() {
         console.log('test2')
         var scales = [
             'anxiety',
@@ -85,33 +85,33 @@ newrelic.addPageAction('xfinished');
         scales.forEach(s => {
 
             // create a table element to hold all the radio sets
-            var table = $('<table></table>');
+            var table = jQuery('<table></table>');
 
             // iterate over each select element with a class of "select-scale_"
-            $('div[class*="select-scale_' + s + '"] select').each(function () {
+            jQuery('div[class*="select-scale_' + s + '"] select').each(function () {
 
-                var selectField = $(this);
+                var selectField = jQuery(this);
 
                 // hide the select element
-                $(this).parent().hide();
+                jQuery(this).parent().hide();
 
                 // create a row element for the label and radio buttons
-                var row = $('<tr></tr>');
+                var row = jQuery('<tr></tr>');
 
                 // get the error message
-                var errorMessage = $(this).data('errormsg-required');
+                var errorMessage = jQuery(this).data('errormsg-required');
                 errorMessage = errorMessage.replace('Please answer the question: ', '');
 
                 // create a cell element for the error message
-                var errorCell = $('<td class="error-message">' + errorMessage + '</td>');
+                var errorCell = jQuery('<td class="error-message">' + errorMessage + '</td>');
                 row.append(errorCell);
 
                 // create a cell element for each radio button
-                $(this).find('option').each(function () {
-                    var optionValue = $(this).val();
+                jQuery(this).find('option').each(function () {
+                    var optionValue = jQuery(this).val();
                     if (optionValue !== '') {
-                        var radioButtonCell = $('<td></td>');
-                        var radioButton = $('<input type="radio" name="' + $(this).parent().attr('name') + '" value="' + optionValue + '">');
+                        var radioButtonCell = jQuery('<td></td>');
+                        var radioButton = jQuery('<input type="radio" name="' + jQuery(this).parent().attr('name') + '" value="' + optionValue + '">');
                         radioButtonCell.append(radioButton);
                         row.append(radioButtonCell);
                     }
@@ -123,7 +123,7 @@ newrelic.addPageAction('xfinished');
                 // listen for changes to the radio buttons
                 row.find('input[type="radio"]').change(function () {
                     // get the value of the selected radio button
-                    var selectedValue = $(this).val();
+                    var selectedValue = jQuery(this).val();
 
                     // set the value of the corresponding select element
                     selectField.val(selectedValue);
@@ -131,7 +131,7 @@ newrelic.addPageAction('xfinished');
             });
 
             // insert the table after the label of the first select element
-            $('.required-fields').append('<h2>Fragenblock</h2>').append(table).append('<br><br>');
+            jQuery('.required-fields').append('<h2>Fragenblock</h2>').append(table).append('<br><br>');
 
         });
 
