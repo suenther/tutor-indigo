@@ -71,7 +71,7 @@ newrelic.addPageAction('xfinished');
 <script>
     function selectToRadios() {
         console.log('selectToRadios called')
-        var scales = [
+        const scales = [
             'anxiety',
             'big5',
             'cog',
@@ -81,10 +81,48 @@ newrelic.addPageAction('xfinished');
             'proc',
         ];
 
+        const likert5 = [
+            'trifft voll zu',
+            'trifft zu',
+            'weder noch',
+            'trifft nicht zu',
+            'trifft gar nicht zu',
+            'keine angabe',
+        ];
+
+        const likert7 = [
+            'trifft voll zu',
+            'trifft zu',
+            'trifft etwas zu',
+            'weder noch',
+            'trifft kaum zu',
+            'trifft nicht zu',
+            'trifft gar nicht zu',
+            'keine angabe',
+        ];
+
         scales.forEach(s => {
 
             // create a table element to hold all the radio sets
             var table = jQuery('<table></table>');
+
+            // add row with numbers based on number of radios in the table
+            var numCols = jQuery('div[class*="select-scale_' + s + '"] select option').length;
+            var numRow = jQuery('<tr></tr>');
+            for (var i = 0; i < numCols; i++) {
+                var numCell = jQuery('<td>' + i + '</td>');
+
+                if (numCols === 6) {
+                    numCell = jQuery('<td>' + likert5[i] + '</td>');
+                }
+
+                if (numCols === 8) {
+                    numCell = jQuery('<td>' + likert7[i] + '</td>');
+                }
+
+                numRow.append(numCell);
+            }
+            table.append(numRow);
 
             // iterate over each select element with a class of "select-scale_"
             jQuery('div[class*="select-scale_' + s + '"] select').each(function () {
