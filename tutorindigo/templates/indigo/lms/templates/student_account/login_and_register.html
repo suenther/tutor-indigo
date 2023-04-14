@@ -107,8 +107,10 @@ newrelic.addPageAction('xfinished');
             var table = jQuery('<table></table>');
 
             // add row with numbers based on number of radios in the table
-            var numCols = jQuery('div[class*="select-scale_' + s + '"] select option').length;
+            var numCols = jQuery('select#register-scale_' + s + '1 option').length;
             var numRow = jQuery('<tr></tr>');
+            numRow.append(jQuery('<td> - </td>'));
+
             for (var i = 0; i < numCols; i++) {
                 var numCell = jQuery('<td>' + i + '</td>');
 
