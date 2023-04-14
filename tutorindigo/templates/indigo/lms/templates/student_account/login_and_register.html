@@ -82,6 +82,7 @@ newrelic.addPageAction('xfinished');
         ];
 
         const likert5 = [
+            '.',
             'trifft voll zu',
             'trifft zu',
             'weder noch',
@@ -91,6 +92,7 @@ newrelic.addPageAction('xfinished');
         ];
 
         const likert7 = [
+            '.',
             'trifft voll zu',
             'trifft zu',
             'trifft etwas zu',
@@ -109,16 +111,15 @@ newrelic.addPageAction('xfinished');
             // add row with numbers based on number of radios in the table
             var numCols = jQuery('select#register-scale_' + s + '1 option').length;
             var numRow = jQuery('<tr></tr>');
-            numRow.append(jQuery('<td> - </td>'));
 
             for (var i = 0; i < numCols; i++) {
                 var numCell = jQuery('<td>' + i + '</td>');
 
-                if (numCols === 6) {
+                if (numCols === 7) {
                     numCell = jQuery('<td>' + likert5[i] + '</td>');
                 }
 
-                if (numCols === 8) {
+                if (numCols === 9) {
                     numCell = jQuery('<td>' + likert7[i] + '</td>');
                 }
 
