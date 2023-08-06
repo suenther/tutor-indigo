@@ -104,7 +104,7 @@ newrelic.addPageAction('xfinished');
         ];
 
         const explanations = {
-            'beforeall': jQuery('<p id="ask_survey">With this course, we are conducting a study to improve systematically and data-based the quality of teaching. The aim is to increase learning success, reduce failure rates and to ensure that as many students as possible invest their time spent on learning wisely. In order to develop improvements that are as accurate as possible and tailored to the students, we kindly ask you to fill in the following questions covering individual characteristics relevant to learning. <br>It takes about 8-10 minutes to complete the questions. The questions will be recorded anonymously and only serve as study purpose (i.e., improving the learning platform). Responding to the questions has no influence on your grading. There are no right or wrong answers. Of course, responding is voluntary and items can be marked with "no answer".</p>'),
+            'beforeall': jQuery('<p class="survey_text" id="ask_survey">With this course, we are conducting a study to improve systematically and data-based the quality of teaching. The aim is to increase learning success, reduce failure rates and to ensure that as many students as possible invest their time spent on learning wisely. In order to develop improvements that are as accurate as possible and tailored to the students, we kindly ask you to fill in the following questions covering individual characteristics relevant to learning. <br>It takes about 8-10 minutes to complete the questions. The questions will be recorded anonymously and only serve as study purpose (i.e., improving the learning platform). Responding to the questions has no influence on your grading. There are no right or wrong answers. Of course, responding is voluntary and items can be marked with "no answer".</p>'),
             'efficacy': jQuery('<p class="survey_text">The following questions ask about your motivation for and attitudes about this course. <br>Please rate each statement in terms of how much it applies to you. You can grade your answers from (1) "not all all true of me" to (7) "very true of me".</p>'),
             'meta_cog': jQuery('<p class="survey_text">The following questions ask about your learning strategies and study skills for this course. <br>Please rate each statement in terms of how much it applies to you. You can grade your answers from (1) "not all all true of me" to (7) "very true of me".</p>'),
             'proc': jQuery('<p class="survey_text">The following questions assess your habits and routines as a student. Please answer the following as they apply to yourself. You can grade your answers from (1) "Disagree" to (5) "Agree".</p>')
@@ -210,6 +210,10 @@ newrelic.addPageAction('xfinished');
         }
     }
 
+    .required-fields select.input-inline {
+        background: white;
+    }
+
     label.focus-out {
         position: relative !important;
         padding-left: 0 !important;
@@ -238,7 +242,7 @@ newrelic.addPageAction('xfinished');
         text-align: left;
         width: 28%;
     }
-    p#ask_survey {
+    p.survey_text {
         color: #065683;
         font-style: normal;
         opacity: 0.75;
