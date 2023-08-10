@@ -117,7 +117,7 @@ newrelic.addPageAction('xfinished');
         scales.forEach(s => {
 
             // create a table element to hold all the radio sets
-            var table = jQuery('<table class="eesys-likert"></table>');
+            var table = jQuery('<!-- Table for ' + s + ' --><table class="eesys-likert"></table><!-- /Table for ' + s + ' -->');
 
             // add row with numbers based on number of radios in the table
             var numCols = jQuery('select#register-scale_' + s + '1 option').length;
@@ -136,6 +136,8 @@ newrelic.addPageAction('xfinished');
 
                 numRow.append(numCell);
             }
+
+            table.append(jQuery('<!-- number of cols: '+numCols+' -->'))
             table.append(numRow);
 
             // iterate over each select element with a class of "select-scale_"
