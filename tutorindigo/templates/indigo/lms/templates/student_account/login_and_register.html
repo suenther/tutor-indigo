@@ -193,6 +193,7 @@ newrelic.addPageAction('xfinished');
         });
 
         // After the fact, move tr's around
+
         $("#eesys-matrix-efficacy").hide(); // Hide old table
         $("#eesys-matrix-efficacy tr").first().remove(); // remove the header row
         $("#eesys-matrix-anxiety tbody").append($("#eesys-matrix-efficacy tr")); // move remaining rows to new table
