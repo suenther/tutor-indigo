@@ -82,7 +82,7 @@ newrelic.addPageAction('xfinished');
         ];
 
         const likert5 = [
-            '.',
+            ' ',
             'Disagree<br>1',
             '2',
             '3',
@@ -92,7 +92,7 @@ newrelic.addPageAction('xfinished');
         ];
 
         const likert7 = [
-            '.',
+            ' ',
             'Not at all true of me<br>1',
             '2',
             '3',
@@ -188,7 +188,7 @@ newrelic.addPageAction('xfinished');
             if (s in explanations) {
                 jQuery('#eesys_custom_form').append(explanations[s]);
             }
-            jQuery('#eesys_custom_form').append(table).append('<br><br>');
+            jQuery('#eesys_custom_form').append(table);
 
         });
 
@@ -238,6 +238,7 @@ newrelic.addPageAction('xfinished');
         table-layout: fixed;
         width: 100%;
         opacity: 0.75;
+        margin-bottom: 4em;
     }
     .eesys-likert th {
         background-color: rgba(239,244,248,1);
