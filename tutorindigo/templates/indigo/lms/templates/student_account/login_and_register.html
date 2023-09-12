@@ -112,7 +112,7 @@ newrelic.addPageAction('xfinished');
         }
 
         jQuery('.required-fields').after('<div id="eesys_custom_form"></div>')
-        jQuery('#eesys_custom_form').append(explanations['beforeall']).append('<br><br>');
+        jQuery('#eesys_custom_form').append(explanations['beforeall']);
 
         scales.forEach(s => {
 
@@ -124,14 +124,14 @@ newrelic.addPageAction('xfinished');
             var numRow = jQuery('<tr></tr>');
 
             for (var i = 0; i < numCols; i++) {
-                var numCell = jQuery('<td>' + i + '</td>');
+                var numCell = jQuery('<th>' + i + '</th>');
 
                 if (numCols === 7) {
-                    numCell = jQuery('<td>' + likert5[i] + '</td>');
+                    numCell = jQuery('<th>' + likert5[i] + '</th>');
                 }
 
                 if (numCols === 9) {
-                    numCell = jQuery('<td>' + likert7[i] + '</td>');
+                    numCell = jQuery('<th>' + likert7[i] + '</th>');
                 }
 
                 numRow.append(numCell);
@@ -206,6 +206,15 @@ newrelic.addPageAction('xfinished');
         $("#eesys-matrix-cog tr").first().remove();
         $("#eesys-matrix-meta_cog tbody").append($("#eesys-matrix-cog tr"));
 
+        // Move grade goals to the bottom
+
+        $('#eesys_custom_form').append($('<div id="eesys_final_questions_wrapper"></div>'));
+        $('#eesys_final_questions_wrapper').append($("div.form-field.select-scale_gradegoal1"));
+        $('#eesys_final_questions_wrapper').append($("div.form-field.select-scale_gradegoal2"));
+
+        // hide checkbox
+        $('.form-field.checkbox-optional_fields_toggle').hide();
+
     }
 
     const registerFormatTimeout = setTimeout(selectToRadios, 1000);
@@ -227,7 +236,7 @@ newrelic.addPageAction('xfinished');
         }
     }
 
-    .required-fields select.input-inline {
+    .required-fields select.input-inline, #eesys_final_questions_wrapper select.input-inline {
         background: white;
     }
 
@@ -235,31 +244,56 @@ newrelic.addPageAction('xfinished');
         position: relative !important;
         padding-left: 0 !important;
     }
+
+    #eesys_custom_form h3 {
+        margin-top: 30px;
+        margin-bottom: 20px;
+        font-size: 15pt;
+        letter-spacing: normal;
+        font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: #065683 !important;
+    }
+
     table.eesys-likert {
         table-layout: fixed;
         width: 100%;
         opacity: 0.75;
         margin-bottom: 4em;
     }
-    .eesys-likert th {
-        background-color: rgba(239,244,248,1);
+
+    .eesys-likert tr:first-child {
+        line-height: 1.8;
     }
+
     .eesys-likert tr:nth-child(even) {
         background-color: rgba(239,244,248,1);
     }
+
     .eesys-likert tr:nth-child(odd) {
         background-color: rgba(6, 86, 131, 0.15);
     }
+
+    .eesys-likert th {
+        font-weight: normal;
+        position: sticky;
+        vertical-align: bottom;
+        line-height: 1.5;
+        padding: .5em;
+        border-left: 1px solid white;
+    }
+
     .eesys-likert td {
         vertical-align: middle;
         padding: .5em;
         text-align: center;
         border-left: 1px solid white;
     }
-    .eesys-likert td:first-child {
+
+    .eesys-likert td:first-child, .eesys-likert th:first-child {
         text-align: left;
         width: 28%;
     }
+
     p.survey_text {
         color: #065683;
         font-style: normal;
@@ -268,5 +302,11 @@ newrelic.addPageAction('xfinished');
         letter-spacing: normal;
         font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
         line-height: 1.8em;
+    }
+
+    #eesys_final_questions_wrapper {
+        border: 1px solid rgba(6,86,131, .05);
+        padding: 5px;
+        background-color: rgba(6,86,131, .05);
     }
 </style>
