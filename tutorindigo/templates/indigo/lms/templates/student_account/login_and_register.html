@@ -212,11 +212,35 @@ newrelic.addPageAction('xfinished');
         $('#eesys_final_questions_wrapper').append($("div.form-field.select-scale_gradegoal1"));
         $('#eesys_final_questions_wrapper').append($("div.form-field.select-scale_gradegoal2"));
 
+        // Add checkbox for eesys consent
         $('#eesys_custom_form').append($('<div id="eesys_consent_wrapper" class="question-block"></div>'));
-        $('#eesys_consent_wrapper').append($("div.form-field.select-consent"));
+        var consentCheckbox = `<div class="form-field">
+<input type="checkbox" id="checkbox-eesys_consent" class="input-block checkbox error" checked>
+<label for="checkbox-eesys_consent">
+<span class="label-text">I agree that data of my learning behavior may be used to improve the EESYS courses.</span>
+</label>
+</span>
+</div>`;
+        $('#eesys_consent_wrapper').append($(consentCheckbox));
 
-        // hide checkbox
+        $("#checkbox-eesys_consent").change(function() {
+            var selectElement = $("#register-consent");
+            if ($(this).is(":checked")) {
+                selectElement.val("Yes");
+            } else {
+                selectElement.val("No");
+            }
+        });
+        $("#register-consent").val("Yes");
+        $('.form-field.select-consent').hide();
+
+        // hide optional fields checkbox
         $('.form-field.checkbox-optional_fields_toggle').hide();
+
+        // Accept TOS and hide
+        $('#register-terms_of_service').click();
+        $('.form-field.checkbox-terms_of_service').hide();
+
 
     }
 
@@ -324,5 +348,6 @@ newrelic.addPageAction('xfinished');
         border: 1px solid rgba(6,86,131, .05);
         padding: 5px;
         background-color: rgba(6,86,131, .05);
+        margin-bottom: 4em;
     }
 </style>
