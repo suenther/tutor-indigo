@@ -146,7 +146,7 @@ newrelic.addPageAction('xfinished');
                 var selectField = jQuery(this);
 
                 // hide the select element
-                //jQuery(this).parent().hide();
+                jQuery(this).parent().hide();
 
                 // create a row element for the label and radio buttons
                 var row = jQuery('<tr></tr>');
@@ -172,15 +172,6 @@ newrelic.addPageAction('xfinished');
 
                 // append the row to the table
                 table.append(row);
-
-                // listen for changes to the radio buttons
-                row.find('input[type="radio"]').change(function () {
-                    // get the value of the selected radio button
-                    var selectedValue = jQuery(this).val();
-
-                    // set the value of the corresponding select element
-                    selectField.val(selectedValue);
-                });
             });
 
             // insert the table after the label of the first select element
@@ -190,6 +181,18 @@ newrelic.addPageAction('xfinished');
             }
             jQuery('#eesys_custom_form').append(table);
 
+        });
+
+        // Attach a change event listener to all radio buttons with the name "radioGroup"
+        $('input[type="radio"]').change(function() {
+            // Get the value of the selected radio button
+            var selectedValue = $(this).val();
+
+            // Find the input element with the same ID as the radio button's name attribute
+            var inputToUpdate = $('#register-' + $(this).attr('name'));
+
+            // Update the value of the input element
+            inputToUpdate.val(selectedValue);
         });
 
         // After the fact, move tr's around
@@ -245,6 +248,25 @@ newrelic.addPageAction('xfinished');
     }
 
     const registerFormatTimeout = setTimeout(selectToRadios, 1000);
+</script>
+
+<script>
+    // debug functions
+    function fillMatrixRandomly() {
+        var rows = $('#eesys_custom_form table tr');
+
+        // Iterate over each row
+        rows.each(function (index, row) {
+            // Find all radio buttons within the current row
+            var radiosInRow = $(row).find('input[type="radio"]');
+
+            // Generate a random index to select a radio button
+            var randomIndex = Math.floor(Math.random() * radiosInRow.length);
+
+            // Click the randomly selected radio button
+            $(radiosInRow[randomIndex]).prop('checked', true).trigger('change');
+        });
+    }
 </script>
 
 <style>
