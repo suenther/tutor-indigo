@@ -69,16 +69,53 @@ newrelic.addPageAction('xfinished');
 </div>
 
 <script>
+        function sortTable(identifier) {
+  //get the parent table for convenience
+  let table = document.getElementById(identifier);
+
+  //1. get all rows
+  let rowsCollection = table.querySelectorAll("tr");
+
+  //2. convert to array
+  let rows = Array.from(rowsCollection)
+    .slice(1); //skip the header row
+
+  //3. shuffle
+  shuffleArray(rows);
+
+  //4. add back to the DOM
+ // for (const row of rows) {
+ //   row.style.setProperty("background-color","rgba(6,86,131, .15)");
+ //   table.appendChild(row);
+ // }
+  for (var i = 0; i < rows.length; i++) {
+    row = rows[i]; 
+    //if((i % 2) == 0){
+    //  row.style.setProperty("background-color","rgba(6,86,131, .15)");
+    //}
+    table.appendChild(row);
+ }
+
+}
+
+function shuffleArray(array) {
+  for (var i = array.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+}
     function selectToRadios() {
         console.log('selectToRadios called')
         const scales = [
             'anxiety',
-            'big5_',
             'cog',
             'efficacy',
             'meta_cog',
             'mnmgt_int',
             'proc',
+            'big5_',
         ];
 
         const likert5 = [
@@ -223,6 +260,9 @@ newrelic.addPageAction('xfinished');
 <span class="label-text">I agree that data of my learning behavior may be used to improve the EESYS courses.</span>
 </label>
 </span>
+<div class="toggle-form resize-form-full" style="margin-top:10px;font-size:10pt !important;">
+    <span class="text resize-foarm-half" id="pp_consnt">By creating an account, you acknowledge that the EESYS group processes your personal data in accordance with the <a href="/privacy" target="_blank">Privacy Policy</a>.</span>
+</div>
 </div>`;
         $('#eesys_consent_wrapper').append($(consentCheckbox));
 
@@ -234,6 +274,8 @@ newrelic.addPageAction('xfinished');
                 selectElement.val("No");
             }
         });
+
+        $('#eesys-matrix-proc').after("<div><p style='margin-top: 100px;' class='survey_text'>Please rate the following two questions based on your grade goal for this semester. <br>Choose the grade goal that best describes your expectation for this course's final exam.</p></div>");
         $("#register-consent").val("Yes");
         $('.form-field.select-consent').hide();
 
@@ -244,10 +286,15 @@ newrelic.addPageAction('xfinished');
         $('#register-terms_of_service').click();
         $('.form-field.checkbox-terms_of_service').hide();
 
-
+        sortTable("eesys-matrix-anxiety");
+        sortTable("eesys-matrix-meta_cog");
+        sortTable("eesys-matrix-big5_");
+        sortTable("eesys-matrix-meta_cog");
     }
 
     const registerFormatTimeout = setTimeout(selectToRadios, 1000);
+
+    
 </script>
 
 <script>
