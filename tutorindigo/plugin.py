@@ -46,7 +46,7 @@ hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
 hooks.Filters.ENV_PATCHES.add_item(
     (
         "mfe-dockerfile-post-npm-install",
-        "RUN npm install '@edx/frontend-component-footer@git+https://github.com/1nilsh/frontend-component-footer.git'"
+        "RUN npm install '@edx/frontend-component-footer@git+https://github.com/suenther/frontend-component-footer.git'"
     )
 )
 
