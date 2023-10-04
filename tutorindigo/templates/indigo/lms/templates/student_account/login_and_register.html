@@ -128,6 +128,16 @@ function shuffleArray(array) {
             'No answer',
         ];
 
+        const likert5_big5 = [
+            ' ',
+            'Does not apply at all<br>1',
+            'Does not apply<br>2',
+            'Neutral/So-so<br>3',
+            'Does apply<br>4',
+            'Does apply entirely<br>5',
+            'No answer',
+        ];
+
         const likert7 = [
             ' ',
             'Not at all true of me<br>1',
@@ -163,9 +173,14 @@ function shuffleArray(array) {
             for (var i = 0; i < numCols; i++) {
                 var numCell = jQuery('<th>' + i + '</th>');
 
-                if (numCols === 7) {
+                if (numCols === 7 & s != "big5_") {
                     numCell = jQuery('<th>' + likert5[i] + '</th>');
                 }
+                
+                if (numCols === 7 & s == "big5_") {
+                    numCell = jQuery('<th>' + likert5_big5[i] + '</th>');
+                }
+                
 
                 if (numCols === 9) {
                     numCell = jQuery('<th>' + likert7[i] + '</th>');
