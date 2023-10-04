@@ -69,6 +69,14 @@ newrelic.addPageAction('xfinished');
 </div>
 
 <script>
+
+    $("#register").hide()
+
+   function completed_fade(){
+        $("#register :input").prop("disabled", false);
+   }
+   setTimeout(function(){$("#register").fadeIn(800, callback=completed_fade);},300);
+    
         function sortTable(identifier) {
   //get the parent table for convenience
   let table = document.getElementById(identifier);
