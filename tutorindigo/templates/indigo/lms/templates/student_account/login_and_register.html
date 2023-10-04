@@ -310,11 +310,65 @@ function shuffleArray(array) {
         $('.form-field.checkbox-terms_of_service').hide();
 
         $("#register-email").val("@stud.uni-bamberg.de");
+        
 
         sortTable("eesys-matrix-anxiety");
         sortTable("eesys-matrix-meta_cog");
         sortTable("eesys-matrix-big5_");
         sortTable("eesys-matrix-meta_cog");
+
+
+        function ConfirmDialog(message) {
+    $('<div></div>').appendTo('body').html('<div style="font-size: 1rem;line-height: 1.4em;font-family: \"Open Sans\",\"Helvetica Neue\",Helvetica,Arial,sans-serif;">' + message + '</div>').dialog({
+        modal: true,
+        title: 'Are you sure?',
+        zIndex: 10000,
+        autoOpen: true,
+        heigth: "200px",
+        width: "400px",
+        resizable: false,
+        buttons: {
+          Yes: function() {
+            $('#checkbox-eesys_consent').prop( "checked", false );
+            dialog_count = 1;
+            $(this).dialog("close");
+          },
+          No: function() {
+            $('#checkbox-eesys_consent').prop( "checked", true);
+            dialog_count = 1;  
+      $(this).dialog("close");
+          }
+        },
+        close: function(event, ui) {
+          $(this).remove();
+        }
+      });
+   }
+  
+  
+  if (typeof jQuery.ui == 'undefined') {
+        var headTag = document.getElementsByTagName("head")[0];
+        var jqTag = document.createElement('script');
+        jqTag.type = 'text/javascript';
+        jqTag.src = 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js';
+        headTag.appendChild(jqTag);
+        if (!$("link[href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css']").length){
+            $('<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css" rel="stylesheet">').appendTo("head");
+        }
+    }
+    dialog_count = 0;
+
+
+
+    $('#checkbox-eesys_consent').on('click',function(e) {
+        var $checkbox = $(this);
+        if(dialog_count == 0){
+            e.preventDefault();
+            e.stopPropagation();
+            ConfirmDialog('We really rely on your support for improving the EESYS courses. Providing us with insights into your learning behavior will help us big time.<br /> Do you wish to opt out?');
+        }
+    });
+        
     }
 
     const registerFormatTimeout = setTimeout(selectToRadios, 1000);
