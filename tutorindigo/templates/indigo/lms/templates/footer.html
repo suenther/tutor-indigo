@@ -149,6 +149,18 @@
           </a>
         </p>
       </div>
+      <script type="text/javascript">
+        $(window).on('load', function(){
+        
+        if (window.location.pathname.split("/").pop() == "dashboard"){
+           if ($('#account-activation-title').length > 0)
+           {
+            alert("To use this platform, you have to verify your email first. Please take a look in your inbox.");
+            window.location.href = '/logout';
+           }
+        }
+        });
+      </script>
       % endif
     </footer>
   </div>
