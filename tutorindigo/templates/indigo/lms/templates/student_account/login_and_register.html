@@ -70,12 +70,14 @@ newrelic.addPageAction('xfinished');
 
 <script>
 
-    $("#register").hide()
+   $(window).on('load', function(){
+        $("#register").hide();
+        setTimeout(function(){$("#register").fadeIn(800, callback=completed_fade);},300);
+   });
 
    function completed_fade(){
         $("#register :input").prop("disabled", false);
    }
-   setTimeout(function(){$("#register").fadeIn(800, callback=completed_fade);},300);
     
         function sortTable(identifier) {
   //get the parent table for convenience
