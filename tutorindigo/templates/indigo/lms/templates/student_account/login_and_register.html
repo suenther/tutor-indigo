@@ -301,6 +301,10 @@ function shuffleArray(array) {
         
         $(".text-name").hide()
         $("#register-name").val("Anonymous");
+        
+        $(".select-current_semester_of_study").insertBefore($(".select-study_programme"));
+        $(".text-your_age").insertAfter($(".select-enhanced_gender"));
+        $(".select-study_programme").insertBefore($(".select-current_semester_of_study"));
 
         $('#eesys-matrix-big5_').after("<div><p style='margin-top: 100px;' class='survey_text'>Please rate the following two questions based on your grade goal for this semester. <br>Choose the grade goal that best describes your expectation for this course's final exam.</p></div>");
         $("#register-consent").val("Yes");
