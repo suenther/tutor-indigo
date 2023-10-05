@@ -352,7 +352,29 @@ function shuffleArray(array) {
         }
       });
    }
-  
+
+   $("#register-your_age").prop("min", 16);
+   $("#register-your_age").prop("max", 99);
+   $("#register-your_age").prop("maxlength", 2);
+
+
+   $('#register-your_age').on('change', function() {
+       var _this = $(this);
+       var my_min = parseInt(_this.attr('min')) || 0; // if min attribute is not defined, 1 is default
+       var my_max = parseInt(_this.attr('max')) || 99; // if max attribute is not defined, 100 is default
+       var my_val = parseInt(_this.val()) || (""); // if input char is not a number the value will be (min - 1) so first condition will be true
+       if(my_val < my_min) {
+         _this.val("" );
+         alert("The minimum age is 16.");
+       }
+       if(my_val > my_max) {
+         _this.val( my_max );
+        }
+    //      if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);
+    });
+
+
+
   
   if (typeof jQuery.ui == 'undefined') {
         var headTag = document.getElementsByTagName("head")[0];
