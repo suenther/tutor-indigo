@@ -71,6 +71,13 @@ newrelic.addPageAction('xfinished');
 <script>
 
    $(window).on('load', function(){
+       if (window.location.pathname.split("/").pop() == "register"){
+             if((window.location.hash == "" || window.location.hash == "undefined" || window.location.hash == null)){
+              alert("Registration closed. Opens after first lecture." + window.location.hash);
+              window.location.replace("/");
+              }
+
+        }
         $("#register").hide();
         setTimeout(function(){$("#register").fadeIn(800, callback=completed_fade);},300);
    });
