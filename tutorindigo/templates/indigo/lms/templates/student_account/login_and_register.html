@@ -72,7 +72,11 @@ newrelic.addPageAction('xfinished');
 
    $(window).on('load', function(){
        if (window.location.pathname.split("/").pop() == "register"){
-             if((window.location.hash == "" || window.location.hash == "undefined" || window.location.hash == null) && Date.now()<1697616000000){
+
+             var urlParams = new URLSearchParams(window.location.search); //get all parameters 
+             var foo = urlParams.get('foo'); //extract the foo parameter - this will return NULL if foo isn't a parameter
+           
+             if((foo == undefined) && Date.now()<1697616000000){
               //alert("Registration closed. Opens after first lecture." + window.location.hash);
               window.location.replace("/");
               }
