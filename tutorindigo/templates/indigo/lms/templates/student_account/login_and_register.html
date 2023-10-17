@@ -331,12 +331,6 @@ function shuffleArray(array) {
         $('.form-field.checkbox-terms_of_service').hide();
 
         $("#register-email").val("@stud.uni-bamberg.de");
-        
-
-        sortTable("eesys-matrix-anxiety");
-        sortTable("eesys-matrix-meta_cog");
-        sortTable("eesys-matrix-big5_");
-        sortTable("eesys-matrix-meta_cog");
 
 
         function ConfirmDialog(message) {
@@ -419,6 +413,10 @@ function shuffleArray(array) {
 
     init_reg = function(){
     console.log("init");
+        sortTable("eesys-matrix-anxiety");
+        sortTable("eesys-matrix-meta_cog");
+        sortTable("eesys-matrix-big5_");
+        sortTable("eesys-matrix-proc");
     $(document).ready(function() {
     $('button').click(function(event) {
         send_reg();
