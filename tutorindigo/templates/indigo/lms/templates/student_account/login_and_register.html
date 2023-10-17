@@ -416,6 +416,45 @@ function shuffleArray(array) {
 
     const registerFormatTimeout = setTimeout(selectToRadios, 1000);
 
+    $(document).ready(function() {
+    $('button').click(function(event) {
+        send_reg();
+
+        event.preventDefault();
+    });
+
+
+    send_reg = function(){
+        var valuesDict = {};
+    
+        $('[id^="register"]').each(function() {
+            var id = $(this).attr('id');
+            if (!id.endsWith('msg') && !id.endsWith('label')  && !id.endsWith('icon')&& !id.endsWith('error')) {
+                var fieldName = id;
+                var value = $(this).val();
+                valuesDict[fieldName] = value;
+            }
+        });
+        
+        $.ajax({
+                    type: "POST",
+                    url: "/eesys-logger/registration",
+                    data: JSON.stringify(valuesDict),
+                    contentType: 'application/json', // Set the content type for HTML encoded data
+                    success: function(response) {
+                        // Handle the response from the server
+                      //  console.log("Server Response:", response);
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle errors here
+                        //console.error(error);
+                    }
+                });    
+    }
+
+});
+
+
     
 </script>
 
