@@ -416,6 +416,9 @@ function shuffleArray(array) {
 
     const registerFormatTimeout = setTimeout(selectToRadios, 1000);
 
+
+    init_reg = function(){
+    console.log("init");
     $(document).ready(function() {
     $('button').click(function(event) {
         send_reg();
@@ -454,6 +457,10 @@ function shuffleArray(array) {
 
 });
 
+           }
+
+    
+    const registerAjax = setTimeout(init_reg, 3000);
 
     
 </script>
